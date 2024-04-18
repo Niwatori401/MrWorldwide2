@@ -1,0 +1,89 @@
+[gd_scene load_steps=11 format=3 uid="uid://dp5aix43qjyis"]
+
+[ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
+[ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/img/sample/sample_bg.png" id="2_fywnk"]
+[ext_resource type="Texture2D" uid="uid://cemrtiufllac" path="res://asset/img/sample/sample_tray_bg.png" id="3_e2arr"]
+[ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/img/sample/sample_score_bg.png" id="4_4xtpx"]
+[ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/img/sample/sample_shoot_base.png" id="5_s78fh"]
+[ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/img/sample/sample_shoot_arrow.png" id="6_ljkhq"]
+[ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sound/shoot.ogg" id="7_oq1dj"]
+[ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/img/sample/sample_progress_bg.png" id="8_ll3oo"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_63klv"]
+a = Vector2(-256.1, -359.135)
+b = Vector2(-255.1, 356.865)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_hv4vn"]
+a = Vector2(253.9, -360.135)
+b = Vector2(-257.1, -360.135)
+
+[node name="BobbleGame" type="Node2D"]
+position = Vector2(426.1, 289.135)
+script = ExtResource("1_mwlaa")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_fywnk")
+
+[node name="Tray" type="Node2D" parent="."]
+
+[node name="TraySprite" type="Sprite2D" parent="Tray"]
+position = Vector2(0, 248)
+texture = ExtResource("3_e2arr")
+
+[node name="Score" type="Node2D" parent="Tray"]
+position = Vector2(-175, 300)
+
+[node name="ScoreBackground" type="Sprite2D" parent="Tray/Score"]
+texture = ExtResource("4_4xtpx")
+
+[node name="ScoreLabel" type="RichTextLabel" parent="Tray/Score"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Gun" type="Node2D" parent="Tray"]
+position = Vector2(0, 260)
+scale = Vector2(0.34, 0.34)
+
+[node name="GunBase" type="Sprite2D" parent="Tray/Gun"]
+texture = ExtResource("5_s78fh")
+
+[node name="GunBarrel" type="Sprite2D" parent="Tray/Gun"]
+texture = ExtResource("6_ljkhq")
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="Tray/Gun"]
+stream = ExtResource("7_oq1dj")
+
+[node name="ProgressBar" type="Node2D" parent="Tray"]
+
+[node name="ProgressBackground" type="Sprite2D" parent="Tray/ProgressBar"]
+position = Vector2(177, 281)
+scale = Vector2(0.765625, 0.765625)
+texture = ExtResource("8_ll3oo")
+
+[node name="ProgressSprite" type="Sprite2D" parent="Tray/ProgressBar"]
+
+[node name="Hitborder" type="Node2D" parent="."]
+
+[node name="LeftWall" type="StaticBody2D" parent="Hitborder"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/LeftWall"]
+shape = SubResource("SegmentShape2D_63klv")
+debug_color = Color(0.92549, 0, 0.682353, 0.419608)
+
+[node name="RightWall" type="StaticBody2D" parent="Hitborder"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/RightWall"]
+position = Vector2(511.9, -0.13501)
+shape = SubResource("SegmentShape2D_63klv")
+debug_color = Color(0.92549, 0, 0.682353, 0.419608)
+
+[node name="TopWall" type="StaticBody2D" parent="Hitborder"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/TopWall"]
+shape = SubResource("SegmentShape2D_hv4vn")
+
+[node name="BottomWall" type="StaticBody2D" parent="Hitborder"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/BottomWall"]
+position = Vector2(3.89999, 721.865)
+shape = SubResource("SegmentShape2D_hv4vn")
