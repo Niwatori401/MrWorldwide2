@@ -1,28 +1,34 @@
-[gd_scene load_steps=6 format=3 uid="uid://bpl3g7sqx2rpv"]
+[gd_scene load_steps=6 format=3 uid="uid://bife845efq5h1"]
 
-[ext_resource type="Script" path="res://script/bobble.gd" id="1_1yoo6"]
-[ext_resource type="Texture2D" uid="uid://d4gb6438nhaqe" path="res://asset/img/sample/bobble_2.png" id="2_my71t"]
-[ext_resource type="Texture2D" uid="uid://duskhdng7cfwj" path="res://asset/img/sample/food_2.png" id="3_gw4oo"]
+[ext_resource type="Script" path="res://script/bobble.gd" id="1_q5ljn"]
+[ext_resource type="Texture2D" uid="uid://d4gb6438nhaqe" path="res://asset/img/sample/bobble_2.png" id="2_rc51c"]
+[ext_resource type="Texture2D" uid="uid://duskhdng7cfwj" path="res://asset/img/sample/food_2.png" id="3_pwv6e"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tir7e"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tefm1"]
 friction = 0.0
 bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ln10o"]
+radius = 23.0
 
-[node name="Bobble" type="RigidBody2D"]
-physics_material_override = SubResource("PhysicsMaterial_tir7e")
+[node name="Bobble" type="RigidBody2D" groups=["ballstop"]]
+physics_material_override = SubResource("PhysicsMaterial_tefm1")
 gravity_scale = 0.0
-script = ExtResource("1_1yoo6")
+continuous_cd = 2
+max_contacts_reported = 5
+contact_monitor = true
+script = ExtResource("1_q5ljn")
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ln10o")
 
-[node name="Shell" type="Sprite2D" parent="."]
+[node name="Shell" type="Sprite2D" parent="CollisionShape"]
 scale = Vector2(0.04, 0.04)
-texture = ExtResource("2_my71t")
+texture = ExtResource("2_rc51c")
 
-[node name="Food" type="Sprite2D" parent="."]
+[node name="Food" type="Sprite2D" parent="CollisionShape"]
 position = Vector2(-2.38419e-07, -4.76837e-07)
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_gw4oo")
+texture = ExtResource("3_pwv6e")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

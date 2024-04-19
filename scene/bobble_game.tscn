@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dp5aix43qjyis"]
+[gd_scene load_steps=13 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
 [ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/img/sample/sample_bg.png" id="2_fywnk"]
@@ -9,16 +9,21 @@
 [ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sound/shoot.ogg" id="7_oq1dj"]
 [ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/img/sample/sample_progress_bg.png" id="8_ll3oo"]
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_63klv"]
-a = Vector2(-256.1, -359.135)
-b = Vector2(-255.1, 356.865)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_piu8p"]
+size = Vector2(3.89617, 705.195)
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_hv4vn"]
-a = Vector2(253.9, -360.135)
-b = Vector2(-257.1, -360.135)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pddj3"]
+size = Vector2(2.59741, 703.896)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xkqjw"]
+size = Vector2(525.179, 5.19482)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dtkss"]
+size = Vector2(524.529, 20)
 
 [node name="BobbleGame" type="Node2D"]
-position = Vector2(426.1, 289.135)
+position = Vector2(559.925, 335.67)
+scale = Vector2(0.77, 0.77)
 script = ExtResource("1_mwlaa")
 
 [node name="BackgroundSprite" type="Sprite2D" parent="."]
@@ -67,23 +72,23 @@ texture = ExtResource("8_ll3oo")
 [node name="LeftWall" type="StaticBody2D" parent="Hitborder"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/LeftWall"]
-shape = SubResource("SegmentShape2D_63klv")
-debug_color = Color(0.92549, 0, 0.682353, 0.419608)
+position = Vector2(-255.097, -5.41577)
+shape = SubResource("RectangleShape2D_piu8p")
 
 [node name="RightWall" type="StaticBody2D" parent="Hitborder"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/RightWall"]
-position = Vector2(511.9, -0.13501)
-shape = SubResource("SegmentShape2D_63klv")
-debug_color = Color(0.92549, 0, 0.682353, 0.419608)
+position = Vector2(255.942, -6.06497)
+shape = SubResource("RectangleShape2D_pddj3")
 
-[node name="TopWall" type="StaticBody2D" parent="Hitborder"]
+[node name="TopWall" type="StaticBody2D" parent="Hitborder" groups=["ballstop"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/TopWall"]
-shape = SubResource("SegmentShape2D_hv4vn")
+position = Vector2(0.0974121, -360.61)
+shape = SubResource("RectangleShape2D_xkqjw")
 
 [node name="BottomWall" type="StaticBody2D" parent="Hitborder"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/BottomWall"]
-position = Vector2(3.89999, 721.865)
-shape = SubResource("SegmentShape2D_hv4vn")
+position = Vector2(-1.12817, 358.87)
+shape = SubResource("RectangleShape2D_dtkss")

@@ -1,12 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://kxasi4rh66yh"]
+[gd_scene load_steps=5 format=3 uid="uid://kxasi4rh66yh"]
 
 [ext_resource type="PackedScene" uid="uid://dp5aix43qjyis" path="res://scene/bobble_game.tscn" id="1_olr4a"]
-[ext_resource type="PackedScene" uid="uid://32eecdnulpuc" path="res://scene/bobble/bobble1.tscn" id="2_uthai"]
-[ext_resource type="PackedScene" uid="uid://bpl3g7sqx2rpv" path="res://scene/bobble/bobble2.tscn" id="3_31tl2"]
+[ext_resource type="PackedScene" uid="uid://c36v4g3kn187f" path="res://scene/bobble/bobble1.tscn" id="2_c4oij"]
+[ext_resource type="PackedScene" uid="uid://bife845efq5h1" path="res://scene/bobble/bobble2.tscn" id="3_jrpgf"]
+[ext_resource type="PackedScene" uid="uid://ctmn4uhrl08v0" path="res://scene/bobble/bobble3.tscn" id="4_ovcto"]
 
 [node name="TestStage" type="Node2D"]
 
 [node name="BobbleGame" parent="." instance=ExtResource("1_olr4a")]
-position = Vector2(576, 321)
-scale = Vector2(0.88, 0.88)
-bobble_set = Array[PackedScene]([ExtResource("2_uthai"), ExtResource("3_31tl2")])
+bobble_set = Array[PackedScene]([ExtResource("2_c4oij"), ExtResource("3_jrpgf"), ExtResource("4_ovcto")])

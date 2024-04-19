@@ -1,10 +1,7 @@
-extends RigidBody2D
-
-signal impacted(bobble)
+extends StaticBody2D
 
 @export var bobble_type : String;
 
-var already_impacted = false;
 
 func _ready():
 	pass
@@ -21,16 +18,3 @@ func scale_bobble(pixel_radius):
 	var scale_multiplier_y = pixel_radius / (original_size[1] / 2);
 	
 	$CollisionShape.scale = Vector2(scale_multiplier_x, scale_multiplier_y);
-
-
-func set_velocity(velocity_vector):
-	self.set_linear_velocity(velocity_vector);
-
-
-func _on_body_entered(body):	
-	if already_impacted:
-		return;
-	if body.is_in_group("ballstop"):
-		already_impacted = true;
-		impacted.emit(self);
-	

@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://co2qwup15qn6w"]
+
+[ext_resource type="Script" path="res://script/static_bobble.gd" id="1_ahm5w"]
+[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/img/sample/food_1.png" id="3_8v1pj"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2uh01"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ln10o"]
+radius = 16.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_tlofj"]
+load_path = "res://.godot/imported/bobble_1.png-b6031ab1c47c965a5b5cb203cc0489b2.ctex"
+
+[node name="Bobble" type="StaticBody2D" groups=["ballstop"]]
+physics_material_override = SubResource("PhysicsMaterial_2uh01")
+script = ExtResource("1_ahm5w")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ln10o")
+debug_color = Color(0.87451, 0, 0.835294, 0.419608)
+
+[node name="Shell" type="Sprite2D" parent="CollisionShape"]
+scale = Vector2(0.04, 0.04)
+texture = SubResource("CompressedTexture2D_tlofj")
+
+[node name="Food" type="Sprite2D" parent="CollisionShape"]
+position = Vector2(-2.38419e-07, -4.76837e-07)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_8v1pj")

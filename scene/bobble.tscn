@@ -9,20 +9,26 @@ friction = 0.0
 bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ln10o"]
+radius = 23.0
 
-[node name="Bobble" type="RigidBody2D"]
+[node name="Bobble" type="RigidBody2D" groups=["ballstop"]]
 physics_material_override = SubResource("PhysicsMaterial_tefm1")
 gravity_scale = 0.0
+continuous_cd = 2
+max_contacts_reported = 5
+contact_monitor = true
 script = ExtResource("1_6gx4m")
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ln10o")
 
-[node name="Shell" type="Sprite2D" parent="."]
+[node name="Shell" type="Sprite2D" parent="CollisionShape"]
 scale = Vector2(0.04, 0.04)
 texture = ExtResource("2_nipbb")
 
-[node name="Food" type="Sprite2D" parent="."]
+[node name="Food" type="Sprite2D" parent="CollisionShape"]
 position = Vector2(-2.38419e-07, -4.76837e-07)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_06dvj")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
