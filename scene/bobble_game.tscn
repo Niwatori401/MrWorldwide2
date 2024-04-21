@@ -67,6 +67,9 @@ texture = ExtResource("8_ll3oo")
 
 [node name="ProgressSprite" type="Sprite2D" parent="Tray/ProgressBar"]
 
+[node name="HelpLines" type="Node2D" parent="."]
+scale = Vector2(1, 1)
+
 [node name="Hitborder" type="Node2D" parent="."]
 
 [node name="LeftWall" type="StaticBody2D" parent="Hitborder"]
@@ -74,6 +77,7 @@ texture = ExtResource("8_ll3oo")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/LeftWall"]
 position = Vector2(-255.097, -5.41577)
 shape = SubResource("RectangleShape2D_piu8p")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
 [node name="RightWall" type="StaticBody2D" parent="Hitborder"]
 
@@ -84,7 +88,7 @@ shape = SubResource("RectangleShape2D_pddj3")
 [node name="TopWall" type="StaticBody2D" parent="Hitborder" groups=["ballstop"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/TopWall"]
-position = Vector2(0.0974121, -360.61)
+position = Vector2(0.0974121, -363.208)
 shape = SubResource("RectangleShape2D_xkqjw")
 
 [node name="BottomWall" type="StaticBody2D" parent="Hitborder"]
