@@ -158,7 +158,7 @@ func handle_collision(bobble):
 
 	
 func dfs(grid : Array[Array], row : int, col : int):
-	if grid[row][col] == null:
+	if grid[row][col] == null or grid[row][col].is_queued_for_deletion():
 		return;
 
 	grid[row][col] = null;
