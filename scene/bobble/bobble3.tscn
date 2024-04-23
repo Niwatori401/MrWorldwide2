@@ -18,6 +18,7 @@ continuous_cd = 2
 max_contacts_reported = 5
 contact_monitor = true
 script = ExtResource("1_nxk2o")
+bobble_type = 3
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ln10o")

@@ -1,7 +1,6 @@
 extends StaticBody2D
 
-@export var bobble_type : String;
-
+var bobble_type : int;
 
 func _ready():
 	pass

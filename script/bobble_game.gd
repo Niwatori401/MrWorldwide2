@@ -28,7 +28,6 @@ var help_lines = [];
 
 var bubble_grid : Array[Array];
 
-
 func _ready():
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
@@ -113,12 +112,12 @@ func init_grid():
 			# Make big row
 			new_row = [];
 			for j in range(cell_count_horizontal):
-				new_row.append(0);
+				new_row.append(null);
 		else:
 			# Make small row
 			new_row = [];
 			for j in range(cell_count_horizontal - 1):
-				new_row.append(0); 
+				new_row.append(null); 
 			
 		bubble_grid.append(new_row);
 	
@@ -129,7 +128,7 @@ func launch_random_bobble():
 	new_bobble.scale_bobble(bubble_radius);
 	
 	add_child(new_bobble);
-	new_bobble.connect("impacted", freeze_bobble_in_place)
+	new_bobble.connect("impacted", handle_collision)
 	new_bobble.global_position = $Tray/Gun/GunBase.global_position;
 	new_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
 	
@@ -144,12 +143,107 @@ func try_rotate_left(delta, speed_multiplier = 1.0):
 func try_rotate_right(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation + (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
 		
+
+func handle_collision(bobble):
+	freeze_bobble_in_place(bobble);
+	pop_eligible_bobbles();
+	pop_floating_bobbles();
+
+
 	
+func dfs(grid : Array[Array], row : int, col : int):
+	if grid[row][col] == null:
+		return;
+
+	grid[row][col] = null;
+	
+	# (Row, Col)
+	var directions_from_big = [Vector2(1, 0), Vector2(1, -1), Vector2(0, -1), Vector2(0, 1)];
+	var directions_from_small = [Vector2(0, -1), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1)];
+
+	var directions = directions_from_big if row % 2 == 0 else directions_from_small;
+		
+	for direction in directions:
+		var new_row = row + direction[0];
+		var new_col = col + direction[1];  
+	
+		if new_row < 0 or new_row >= grid.size() or \
+		   new_col < 0 or new_col >= grid[new_row].size() or \
+		   grid[new_row][new_col] == null or \
+		   grid[new_row][new_col].is_queued_for_deletion():
+			continue;
+		
+		dfs(grid, new_row, new_col);	
+	
+	
+func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_list : Array[Vector2]):
+	if grid[row][col] == null:
+		return;
+	
+	cur_list.append(Vector2(row, col));
+	grid[row][col] = null;
+	
+	# (Row, Col)
+	var directions_from_big = [Vector2(1, 0), Vector2(1, -1), Vector2(0, -1), Vector2(0, 1)];
+	var directions_from_small = [Vector2(0, -1), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1)];
+
+	var directions = directions_from_big if row % 2 == 0 else directions_from_small;
+		
+	for direction in directions:
+		var new_row = row + direction[0];
+		var new_col = col + direction[1];  
+	
+		if new_row < 0 or new_row >= grid.size() or \
+		   new_col < 0 or new_col >= grid[new_row].size() or \
+		   grid[new_row][new_col] == null or grid[new_row][new_col].bobble_type != cur_type:
+			continue;
+		
+		dfs_typed(grid, new_row, new_col, cur_type, cur_list);
+		
+		
+func pop_eligible_bobbles():
+	# Perform deep copy
+	var grid_copy = bubble_grid.duplicate(true);
+	
+	for row in range(grid_copy.size()):
+		for col in range(grid_copy[row].size()):
+			
+			if grid_copy[row][col] == null:
+				continue;
+			
+			var eligible_bobbles : Array[Vector2]= [];	
+			dfs_typed(grid_copy, row, col, grid_copy[row][col].bobble_type, eligible_bobbles);
+			
+			if eligible_bobbles.size() >= 3:
+				pop_bobbles_at_coords(eligible_bobbles);
+	
+	
+func pop_bobbles_at_coords(coord_list : Array[Vector2]):
+	for coord in coord_list:
+		bubble_grid[coord[0]][coord[1]].queue_free();
+	
+func pop_floating_bobbles():
+	# Perform deep copy
+	var grid_copy = bubble_grid.duplicate(true);
+	for col in range(grid_copy[0].size()):
+		dfs(grid_copy, 0 , col);
+	
+	var floating_bobbles : Array[Vector2]= [];	
+	for row in range(grid_copy.size()):
+		for col in range(grid_copy[row].size()):
+			
+			if grid_copy[row][col] == null:
+				continue;
+			
+			floating_bobbles.append(Vector2(row, col));
+		
+	pop_bobbles_at_coords(floating_bobbles);
+
 func freeze_bobble_in_place(bobble):
 	var cell_indeces = get_nearest_empty_cell(bobble.global_position + Vector2(bubble_radius, bubble_radius));
-	lock_bobble_to_grid(bobble, cell_indeces);
+	bubble_grid[cell_indeces[1]][cell_indeces[0]] = lock_bobble_to_grid(bobble, cell_indeces);
 	
-func lock_bobble_to_grid(bobble, indeces):
+func lock_bobble_to_grid(bobble, indeces) -> Node2D:
 	var is_small_row : bool = indeces[1] % 2 == 1;
 	var bobble_x : float;
 	var bobble_y : float;
@@ -166,21 +260,22 @@ func lock_bobble_to_grid(bobble, indeces):
 	static_bobble.collision_layer |= RAYCAST_COLLISION_LAYER; 
 
 	static_bobble.scale_bobble(bubble_radius);
-	add_child(static_bobble);
+	call_deferred("add_child", static_bobble);
 	var x_pos = $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x + bobble_x;
 	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \
 				($Hitborder/TopWall/CollisionShape2D.shape.get_rect().size.y * $Hitborder/TopWall/CollisionShape2D.global_scale[1]) / 2 + \
 				bubble_radius + bobble_y;
 				
-	static_bobble.global_position = Vector2(x_pos, y_pos);
+	static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
 	static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
 	static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
 	
-	# TODO: Set properties identifying node type on new static node.
+	static_bobble.bobble_type = bobble.bobble_type;
 	bobble.queue_free();
+	return static_bobble;
 
-func print_grid():
-	for row in bubble_grid:
+func print_grid(grid_to_print):
+	for row in grid_to_print:
 		print(row);
 
 func get_nearest_empty_cell(center_of_bobble) -> Vector2i:
@@ -203,7 +298,6 @@ func get_nearest_empty_cell(center_of_bobble) -> Vector2i:
 	else:
 		column_number = round((center_of_bobble[0])/ (2 * bubble_radius)) - 1;
 
-	bubble_grid[row_number][column_number] = 1;
 	return Vector2(column_number,row_number);
 
 
