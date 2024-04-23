@@ -9,6 +9,9 @@ const LAUNCH_SPEED_MAGNITUDE = 600;
 const RAYCAST_COLLISION_LAYER = 0b0010;
 const BOBBLE_COLLISION_LAYER = 0b0001;
 
+const MAX_POP_PITCH : float = 1.3;
+const MIN_POP_PITCH : float = 0.7;
+
 var static_bobble_blueprint : PackedScene = preload("res://scene/static_bobble.tscn");
 var current_rotation = 0;
 
@@ -152,10 +155,18 @@ func try_rotate_right(delta, speed_multiplier = 1.0):
 
 func handle_collision(bobble):
 	freeze_bobble_in_place(bobble);
-	pop_eligible_bobbles();
-	pop_floating_bobbles();
-
-
+	var pop_count_1 = pop_eligible_bobbles();
+	var pop_count_2 = pop_floating_bobbles();
+	
+	$SFX/Pop/DelayBetweenPopTimer.start();
+	
+	for _i in range(pop_count_1 + pop_count_2):
+		await $SFX/Pop/DelayBetweenPopTimer.timeout	
+		$SFX/Pop/PopSound.pitch_scale = randf_range(MIN_POP_PITCH, MAX_POP_PITCH);
+		$SFX/Pop/PopSound.play();
+		
+	$SFX/Pop/DelayBetweenPopTimer.stop();
+	
 	
 func dfs(grid : Array[Array], row : int, col : int):
 	if grid[row][col] == null or grid[row][col].is_queued_for_deletion():
@@ -206,11 +217,11 @@ func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_li
 		
 		dfs_typed(grid, new_row, new_col, cur_type, cur_list);
 		
-		
-func pop_eligible_bobbles():
+# returns number of bobbles popped
+func pop_eligible_bobbles() -> int:
 	# Perform deep copy
 	var grid_copy = bubble_grid.duplicate(true);
-	
+	var pop_count = 0;
 	for row in range(grid_copy.size()):
 		for col in range(grid_copy[row].size()):
 			
@@ -221,14 +232,14 @@ func pop_eligible_bobbles():
 			dfs_typed(grid_copy, row, col, grid_copy[row][col].bobble_type, eligible_bobbles);
 			
 			if eligible_bobbles.size() >= 3:
-				pop_bobbles_at_coords(eligible_bobbles);
+				pop_count += pop_bobbles_at_coords(eligible_bobbles);
+				
 	
+	return pop_count;
 	
-func pop_bobbles_at_coords(coord_list : Array[Vector2]):
-	for coord in coord_list:
-		bubble_grid[coord[0]][coord[1]].queue_free();
-	
-func pop_floating_bobbles():
+
+# returns number of bobbles popped
+func pop_floating_bobbles() -> int:
 	# Perform deep copy
 	var grid_copy = bubble_grid.duplicate(true);
 	for col in range(grid_copy[0].size()):
@@ -243,7 +254,16 @@ func pop_floating_bobbles():
 			
 			floating_bobbles.append(Vector2(row, col));
 		
-	pop_bobbles_at_coords(floating_bobbles);
+	return pop_bobbles_at_coords(floating_bobbles);
+
+func pop_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
+	var count_to_pop = 0;
+	for coord in coord_list:
+		if not bubble_grid[coord[0]][coord[1]].is_queued_for_deletion():
+			bubble_grid[coord[0]][coord[1]].queue_free();
+			count_to_pop += 1;
+	
+	return count_to_pop;
 
 func freeze_bobble_in_place(bobble):
 	var cell_indeces = get_nearest_empty_cell(bobble.global_position + Vector2(bubble_radius, bubble_radius));
