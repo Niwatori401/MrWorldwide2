@@ -22,7 +22,7 @@ var bubble_radius : float;
 var row_height : float;
 
 var row_start_offset : int = 0;
-
+var next_bobble;
 
 var help_lines = [];
 
@@ -33,7 +33,8 @@ func _ready():
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
 	init_grid();
-
+	get_random_bobble();
+	$Tray/Gun/BobbleProp.scale_bobble(bubble_radius);
 
 func _process(delta):
 	var speed_multiplier = 1.0;
@@ -121,21 +122,26 @@ func init_grid():
 			
 		bubble_grid.append(new_row);
 	
+
 	
-func launch_random_bobble():
-	var new_bobble = bobble_set.pick_random().instantiate();
+func get_random_bobble():
+	next_bobble = bobble_set.pick_random().instantiate();
+	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble)
+	
+func launch_bobble():
 	# Adjust scale
-	new_bobble.scale_bobble(bubble_radius);
+	next_bobble.scale_bobble(bubble_radius);
 	
-	add_child(new_bobble);
-	new_bobble.connect("impacted", handle_collision)
-	new_bobble.global_position = $Tray/Gun/GunBase.global_position;
-	new_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
+	add_child(next_bobble);
+	next_bobble.connect("impacted", handle_collision)
+	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
+	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
 	
 	
 func fire_bobble():
 	$Tray/Gun/ShootSound.play();
-	launch_random_bobble();
+	launch_bobble();
+	get_random_bobble();
 	
 func try_rotate_left(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation - (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
