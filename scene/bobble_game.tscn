@@ -111,3 +111,6 @@ stream = ExtResource("10_jv58l")
 
 [node name="DelayBetweenPopTimer" type="Timer" parent="SFX/Pop"]
 wait_time = 0.05
+
+[node name="PopCooldown" type="Timer" parent="."]
+wait_time = 0.06

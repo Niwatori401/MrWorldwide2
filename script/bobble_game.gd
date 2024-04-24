@@ -12,6 +12,7 @@ const BOBBLE_COLLISION_LAYER = 0b0001;
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
 
+var food_prop_blueprint = load("res://scene/food_prop.tscn");
 var static_bobble_blueprint : PackedScene = preload("res://scene/static_bobble.tscn");
 var current_rotation = 0;
 
@@ -55,7 +56,7 @@ func _process(delta):
 	
 	$Tray/Gun/GunBarrel.rotation = self.current_rotation;
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	calculate_raycast_help_lines();
 
 func update_help_lines(delta):
@@ -155,6 +156,9 @@ func try_rotate_right(delta, speed_multiplier = 1.0):
 
 func handle_collision(bobble):
 	freeze_bobble_in_place(bobble);
+	# Allows the static bobble to initialize completely
+	$PopCooldown.start();
+	await $PopCooldown.timeout;
 	var pop_count_1 = pop_eligible_bobbles();
 	var pop_count_2 = pop_floating_bobbles();
 	
@@ -260,10 +264,22 @@ func pop_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 	var count_to_pop = 0;
 	for coord in coord_list:
 		if not bubble_grid[coord[0]][coord[1]].is_queued_for_deletion():
-			bubble_grid[coord[0]][coord[1]].queue_free();
+			spawn_props(coord, bubble_grid[coord[0]][coord[1]]);
+			bubble_grid[coord[0]][coord[1]].pop();
 			count_to_pop += 1;
 	
 	return count_to_pop;
+
+func spawn_props(coordinate, bobble):
+	var prop = food_prop_blueprint.instantiate();
+	prop.scale_bobble(bubble_radius);
+	prop.copy_bobble_textures(bobble);
+	add_child(prop);
+	var impulse_vector = Vector2(randf_range(-100, 100), 0);
+	prop.apply_central_impulse(impulse_vector);
+	
+	prop.set_global_position(bobble.global_position)
+
 
 func freeze_bobble_in_place(bobble):
 	var cell_indeces = get_nearest_empty_cell(bobble.global_position + Vector2(bubble_radius, bubble_radius));
@@ -305,8 +321,6 @@ func print_grid(grid_to_print):
 		print(row);
 
 func get_nearest_empty_cell(center_of_bobble) -> Vector2i:
-	
-	var row_width = $Hitborder/RightWall/CollisionShape2D.global_transform.origin.x - $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x;
 	var top_border_ypos = $Hitborder/TopWall/CollisionShape2D.global_transform.origin.y + $Hitborder/TopWall/CollisionShape2D.shape.get_rect().size[1];
 	
 	# Make origin y-coord relative to top barrier

@@ -6,15 +6,6 @@ signal impacted(bobble)
 
 var already_impacted = false;
 
-func _ready():
-	pass
-
-func _process(delta):
-	pass
-
-func _integrate_forces(state):
-	pass
-
 func scale_bobble(pixel_radius):
 	var original_size = $CollisionShape.shape.get_rect().size;
 	var scale_multiplier_x = pixel_radius / (original_size[0] / 2);
@@ -34,5 +25,6 @@ func _on_body_entered(body):
 		already_impacted = true;
 		impacted.emit(self);
 		
-
+func pop():
+	queue_free();
 	
