@@ -1,6 +1,8 @@
 extends Node2D
 
 @export var bobble_set : Array[PackedScene];
+@export var seconds_between_shots : float = 1.0;
+var cur_seconds_after_shot : float = 0;
 
 const MAX_ROTATION_ABSOLUTE = deg_to_rad(80);
 const ROTATION_SPEED = 3.0;
@@ -43,6 +45,15 @@ func _ready():
 	$Tray/Gun/BobbleProp.scale_bobble(bubble_radius);
 
 func _process(delta):
+	if not can_fire:
+		cur_seconds_after_shot += delta;
+	
+		if cur_seconds_after_shot >= seconds_between_shots:
+			cur_seconds_after_shot = 0;
+			can_fire = true;
+			get_random_bobble();
+			$Tray/Gun/BobbleProp.visible = true;
+	
 	var speed_multiplier = 1.0;
 	if Input.is_action_pressed("shift"):
 		speed_multiplier = 0.2;
@@ -158,9 +169,7 @@ func try_rotate_right(delta, speed_multiplier = 1.0):
 		
 
 func handle_collision(bobble):
-	can_fire = true;
-	get_random_bobble();
-	$Tray/Gun/BobbleProp.visible = true;
+	
 	freeze_bobble_in_place(bobble);
 	# Allows the static bobble to initialize completely
 	$PopCooldown.start();

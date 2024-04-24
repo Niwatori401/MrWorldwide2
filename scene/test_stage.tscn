@@ -25,4 +25,5 @@
 
 [node name="BobbleGame" parent="." instance=ExtResource("1_olr4a")]
 bobble_set = Array[PackedScene]([ExtResource("2_c4oij"), ExtResource("3_jrpgf"), ExtResource("4_ovcto")])
+seconds_between_shots = 0.3
 dot_textures = Array[Texture2D]([ExtResource("5_gbt0m"), ExtResource("6_ife0q"), ExtResource("7_wb2ul"), ExtResource("8_vfn3t"), ExtResource("9_nyu8d"), ExtResource("10_ayyv4"), ExtResource("11_1p0kp"), ExtResource("12_i4r7c"), ExtResource("13_tpfpr"), ExtResource("14_cgu5q"), ExtResource("15_8kkjb"), ExtResource("16_v4x1m"), ExtResource("17_8iuqg"), ExtResource("18_m7alb"), ExtResource("19_8ggqo"), ExtResource("20_4obry")])

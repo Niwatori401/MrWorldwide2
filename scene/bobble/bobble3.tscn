@@ -12,6 +12,7 @@ bounce = 1.0
 radius = 23.0
 
 [node name="Bobble" type="RigidBody2D" groups=["ballstop"]]
+collision_layer = 0
 physics_material_override = SubResource("PhysicsMaterial_tefm1")
 gravity_scale = 0.0
 continuous_cd = 2
