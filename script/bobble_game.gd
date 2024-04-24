@@ -28,6 +28,8 @@ var row_height : float;
 var row_start_offset : int = 0;
 var next_bobble;
 
+var can_fire = true;
+
 var help_lines = [];
 
 var bubble_grid : Array[Array];
@@ -49,7 +51,7 @@ func _process(delta):
 		try_rotate_left(delta, speed_multiplier);
 	if Input.is_action_pressed("right"):
 		try_rotate_right(delta, speed_multiplier);
-	if Input.is_action_just_pressed("up"):
+	if Input.is_action_just_pressed("up") and can_fire:
 		fire_bobble();
 	
 	update_help_lines(delta);
@@ -145,7 +147,8 @@ func launch_bobble():
 func fire_bobble():
 	$Tray/Gun/ShootSound.play();
 	launch_bobble();
-	get_random_bobble();
+	$Tray/Gun/BobbleProp.visible = false;
+	can_fire = false;
 	
 func try_rotate_left(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation - (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
@@ -155,6 +158,9 @@ func try_rotate_right(delta, speed_multiplier = 1.0):
 		
 
 func handle_collision(bobble):
+	can_fire = true;
+	get_random_bobble();
+	$Tray/Gun/BobbleProp.visible = true;
 	freeze_bobble_in_place(bobble);
 	# Allows the static bobble to initialize completely
 	$PopCooldown.start();
