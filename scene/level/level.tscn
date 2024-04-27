@@ -1,0 +1,45 @@
+[gd_scene load_steps=24 format=3 uid="uid://bqmxgs4s7mci"]
+
+[ext_resource type="Script" path="res://script/level.gd" id="1_kph0n"]
+[ext_resource type="PackedScene" uid="uid://dp5aix43qjyis" path="res://scene/bobble_game.tscn" id="2_tmsy2"]
+[ext_resource type="Texture2D" uid="uid://crp8x57ho8lkn" path="res://asset/level/japan/img/stage_bg.png" id="2_vt70i"]
+[ext_resource type="PackedScene" uid="uid://c36v4g3kn187f" path="res://scene/bobble/bobble1.tscn" id="4_ktllo"]
+[ext_resource type="PackedScene" uid="uid://bife845efq5h1" path="res://scene/bobble/bobble2.tscn" id="5_nvfkk"]
+[ext_resource type="PackedScene" uid="uid://ctmn4uhrl08v0" path="res://scene/bobble/bobble3.tscn" id="6_a1gks"]
+[ext_resource type="Texture2D" uid="uid://ca7rvhp6y41ws" path="res://asset/level/japan/img/dot/output_000.png" id="7_ckbjk"]
+[ext_resource type="Texture2D" uid="uid://dccylv3xjkgpu" path="res://asset/level/japan/img/dot/output_002.png" id="8_4ic4f"]
+[ext_resource type="Texture2D" uid="uid://3hid5p66tigv" path="res://asset/level/japan/img/dot/output_004.png" id="9_sir74"]
+[ext_resource type="Texture2D" uid="uid://bm8p4gh28f513" path="res://asset/level/japan/img/dot/output_006.png" id="10_4by1t"]
+[ext_resource type="Texture2D" uid="uid://cc0p7fsrjvayg" path="res://asset/level/japan/img/dot/output_008.png" id="11_wnawi"]
+[ext_resource type="Texture2D" uid="uid://b1lu8ebn8cbfr" path="res://asset/level/japan/img/dot/output_010.png" id="12_qlhu0"]
+[ext_resource type="Texture2D" uid="uid://cotdyun4ojhr8" path="res://asset/level/japan/img/dot/output_012.png" id="13_i5lep"]
+[ext_resource type="Texture2D" uid="uid://bx1kl0u3nycvv" path="res://asset/level/japan/img/dot/output_014.png" id="14_ufd5v"]
+[ext_resource type="Texture2D" uid="uid://bm8bd27k8qmq5" path="res://asset/level/japan/img/dot/output_016.png" id="15_pfv73"]
+[ext_resource type="Texture2D" uid="uid://dl2jpwbll7xp5" path="res://asset/level/japan/img/dot/output_018.png" id="16_5hc1f"]
+[ext_resource type="Texture2D" uid="uid://dvebpuncm0vxi" path="res://asset/level/japan/img/dot/output_020.png" id="17_mstah"]
+[ext_resource type="Texture2D" uid="uid://3o460rpohcat" path="res://asset/level/japan/img/dot/output_022.png" id="18_rmesm"]
+[ext_resource type="Texture2D" uid="uid://cdpjc8kmoek1i" path="res://asset/level/japan/img/dot/output_024.png" id="19_cmelx"]
+[ext_resource type="Texture2D" uid="uid://chvp3syxx4ybc" path="res://asset/level/japan/img/dot/output_026.png" id="20_xxlcr"]
+[ext_resource type="Texture2D" uid="uid://coev14bc0kpqs" path="res://asset/level/japan/img/dot/output_028.png" id="21_sf5ri"]
+[ext_resource type="Texture2D" uid="uid://dxvyak5q5v1s5" path="res://asset/level/japan/img/dot/output_030.png" id="22_x1etq"]
+[ext_resource type="PackedScene" uid="uid://44280b3qkc23" path="res://scene/character.tscn" id="23_oolr0"]
+
+[node name="Level" type="Node2D"]
+script = ExtResource("1_kph0n")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960.623, 548.027)
+scale = Vector2(0.855447, 0.730631)
+texture = ExtResource("2_vt70i")
+
+[node name="BobbleGame" parent="." instance=ExtResource("2_tmsy2")]
+position = Vector2(1521, 541)
+scale = Vector2(1.39, 1.39)
+bobble_set = Array[PackedScene]([ExtResource("4_ktllo"), ExtResource("5_nvfkk"), ExtResource("6_a1gks")])
+SECONDS_BETWEEN_SHOTS = 0.2
+dot_textures = Array[Texture2D]([ExtResource("7_ckbjk"), ExtResource("8_4ic4f"), ExtResource("9_sir74"), ExtResource("10_4by1t"), ExtResource("11_wnawi"), ExtResource("12_qlhu0"), ExtResource("13_i5lep"), ExtResource("14_ufd5v"), ExtResource("15_pfv73"), ExtResource("16_5hc1f"), ExtResource("17_mstah"), ExtResource("18_rmesm"), ExtResource("19_cmelx"), ExtResource("20_xxlcr"), ExtResource("21_sf5ri"), ExtResource("22_x1etq")])
+
+[node name="PauseIcon" type="Sprite2D" parent="."]
+
+[node name="Character" parent="." instance=ExtResource("23_oolr0")]
+point_thresholds = Array[int]([100, 140, 180, 260, 370, 600])

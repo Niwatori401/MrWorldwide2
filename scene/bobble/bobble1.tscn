@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://c36v4g3kn187f"]
 
 [ext_resource type="Script" path="res://script/bobble.gd" id="1_42n6v"]
-[ext_resource type="Texture2D" uid="uid://df714gggegve5" path="res://asset/img/sample/bobble_1.png" id="2_ojyyc"]
-[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/img/sample/food_1.png" id="3_sswhh"]
+[ext_resource type="Texture2D" uid="uid://df714gggegve5" path="res://asset/sample/img/bobble_1.png" id="2_ojyyc"]
+[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/sample/img/food_1.png" id="3_sswhh"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tefm1"]
 friction = 0.0

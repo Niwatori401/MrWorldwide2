@@ -1,15 +1,15 @@
 extends Node2D
 
 @export var bobble_set : Array[PackedScene];
-@export var seconds_between_shots : float = 1.0;
+@export var SECONDS_BETWEEN_SHOTS : float = 1.0;
 var cur_seconds_after_shot : float = 0;
 
-const MAX_ROTATION_ABSOLUTE = deg_to_rad(80);
-const ROTATION_SPEED = 3.0;
-const LAUNCH_SPEED_MAGNITUDE = 600;
+const MAX_ROTATION_ABSOLUTE : float = deg_to_rad(80);
+const ROTATION_SPEED : float = 3.0;
+const LAUNCH_SPEED_MAGNITUDE : float = 900;
 
-const RAYCAST_COLLISION_LAYER = 0b0010;
-const BOBBLE_COLLISION_LAYER = 0b0001;
+const RAYCAST_COLLISION_LAYER : int = 0b0010;
+const BOBBLE_COLLISION_LAYER : int = 0b0001;
 
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
@@ -45,10 +45,19 @@ func _ready():
 	$Tray/Gun/BobbleProp.scale_bobble(bubble_radius);
 
 func _process(delta):
+	if Input.is_action_pressed("kill"):
+		get_tree().quit()
+	
+	if Input.is_action_pressed("fullscreen"):
+		if get_viewport().mode == Window.MODE_MAXIMIZED:
+			get_viewport().mode = Window.MODE_FULLSCREEN;
+		else:
+			get_viewport().mode = Window.MODE_MAXIMIZED;
+	
 	if not can_fire:
 		cur_seconds_after_shot += delta;
 	
-		if cur_seconds_after_shot >= seconds_between_shots:
+		if cur_seconds_after_shot >= SECONDS_BETWEEN_SHOTS:
 			cur_seconds_after_shot = 0;
 			can_fire = true;
 			get_random_bobble();
@@ -79,7 +88,7 @@ func update_help_lines(delta):
 	
 	for c in $HelpLines.get_children():
 		$HelpLines.remove_child(c);
-			
+	
 	for coord in help_lines:
 		var new_line = Line2D.new();
 		$HelpLines.add_child(new_line);
@@ -90,8 +99,7 @@ func update_help_lines(delta):
 		new_line.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED;
 		new_line.add_point(new_line.to_local(coord[0]));
 		new_line.add_point(new_line.to_local(coord[1]));
-		
-	
+
 func add_hitboxes_for_help_lines():
 	var left_wall = $Hitborder/LeftWall.duplicate();
 	var right_wall = $Hitborder/RightWall.duplicate();
@@ -138,13 +146,14 @@ func init_grid():
 				new_row.append(null); 
 			
 		bubble_grid.append(new_row);
-	
 
-	
+
+
 func get_random_bobble():
 	next_bobble = bobble_set.pick_random().instantiate();
 	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble)
-	
+
+
 func launch_bobble():
 	# Adjust scale
 	next_bobble.scale_bobble(bubble_radius);
@@ -153,20 +162,22 @@ func launch_bobble():
 	next_bobble.connect("impacted", handle_collision)
 	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
 	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
-	
-	
+
+
 func fire_bobble():
 	$Tray/Gun/ShootSound.play();
 	launch_bobble();
 	$Tray/Gun/BobbleProp.visible = false;
 	can_fire = false;
-	
+
+
 func try_rotate_left(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation - (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
-	
+
+
 func try_rotate_right(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation + (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
-		
+
 
 func handle_collision(bobble):
 	
@@ -185,8 +196,7 @@ func handle_collision(bobble):
 		$SFX/Pop/PopSound.play();
 		
 	$SFX/Pop/DelayBetweenPopTimer.stop();
-	
-	
+
 func dfs(grid : Array[Array], row : int, col : int):
 	if grid[row][col] == null or grid[row][col].is_queued_for_deletion():
 		return;
@@ -279,18 +289,18 @@ func pop_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 	var count_to_pop = 0;
 	for coord in coord_list:
 		if not bubble_grid[coord[0]][coord[1]].is_queued_for_deletion():
-			spawn_props(coord, bubble_grid[coord[0]][coord[1]]);
+			spawn_props(bubble_grid[coord[0]][coord[1]]);
 			bubble_grid[coord[0]][coord[1]].pop();
 			count_to_pop += 1;
 	
 	return count_to_pop;
 
-func spawn_props(coordinate, bobble):
+func spawn_props(bobble):
 	var prop = food_prop_blueprint.instantiate();
 	prop.scale_bobble(bubble_radius);
 	prop.copy_bobble_textures(bobble);
 	add_child(prop);
-	var impulse_vector = Vector2(randf_range(-100, 100), 0);
+	var impulse_vector = Vector2(randf_range(-100, 100), randf_range(-300, -500));
 	prop.apply_central_impulse(impulse_vector);
 	
 	prop.set_global_position(bobble.global_position)
@@ -315,9 +325,12 @@ func lock_bobble_to_grid(bobble, indeces) -> Node2D:
 	
 	var static_bobble = static_bobble_blueprint.instantiate();
 	static_bobble.collision_layer |= RAYCAST_COLLISION_LAYER; 
-
-	static_bobble.scale_bobble(bubble_radius);
+	
+	static_bobble.pixel_radius = bubble_radius;
 	call_deferred("add_child", static_bobble);
+	static_bobble.connect("added_to_tree", static_bobble.scale_bobble)
+	
+	
 	var x_pos = $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x + bobble_x;
 	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \
 				($Hitborder/TopWall/CollisionShape2D.shape.get_rect().size.y * $Hitborder/TopWall/CollisionShape2D.global_scale[1]) / 2 + \

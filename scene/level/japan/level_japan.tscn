@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bei7aag1mstne"]
+
+[ext_resource type="PackedScene" uid="uid://dp5aix43qjyis" path="res://scene/bobble_game.tscn" id="1_oxrhk"]
+
+[node name="level_japan" type="Node2D"]
+
+[node name="BobbleGame" parent="." instance=ExtResource("1_oxrhk")]
+position = Vector2(865, 324)

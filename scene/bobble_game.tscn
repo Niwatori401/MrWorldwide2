@@ -1,15 +1,15 @@
 [gd_scene load_steps=15 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
-[ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/img/sample/sample_bg.png" id="2_fywnk"]
-[ext_resource type="Texture2D" uid="uid://cemrtiufllac" path="res://asset/img/sample/sample_tray_bg.png" id="3_e2arr"]
-[ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/img/sample/sample_score_bg.png" id="4_4xtpx"]
-[ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/img/sample/sample_shoot_base.png" id="5_s78fh"]
-[ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/img/sample/sample_shoot_arrow.png" id="6_ljkhq"]
-[ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sound/shoot.ogg" id="7_oq1dj"]
+[ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/sample/img/sample_bg.png" id="2_fywnk"]
+[ext_resource type="Texture2D" uid="uid://cemrtiufllac" path="res://asset/sample/img/sample_tray_bg.png" id="3_e2arr"]
+[ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/sample/img/sample_score_bg.png" id="4_4xtpx"]
+[ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/sample/img/sample_shoot_base.png" id="5_s78fh"]
+[ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/sample/img/sample_shoot_arrow.png" id="6_ljkhq"]
+[ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sample/sound/shoot.ogg" id="7_oq1dj"]
 [ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble_prop.tscn" id="8_8itb7"]
-[ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/img/sample/sample_progress_bg.png" id="8_ll3oo"]
-[ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sound/pop.ogg" id="10_jv58l"]
+[ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/sample/img/sample_progress_bg.png" id="8_ll3oo"]
+[ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sample/sound/pop.ogg" id="10_jv58l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_piu8p"]
 size = Vector2(3.89617, 705.195)

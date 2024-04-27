@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://co2qwup15qn6w"]
 
 [ext_resource type="Script" path="res://script/static_bobble.gd" id="1_ahm5w"]
-[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/img/sample/food_1.png" id="3_8v1pj"]
+[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/sample/img/food_1.png" id="3_8v1pj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2uh01"]
 
