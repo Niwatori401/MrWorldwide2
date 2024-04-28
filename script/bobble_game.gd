@@ -11,6 +11,8 @@ const LAUNCH_SPEED_MAGNITUDE : float = 900;
 const RAYCAST_COLLISION_LAYER : int = 0b0010;
 const BOBBLE_COLLISION_LAYER : int = 0b0001;
 
+const KILL_LINE_PERCENTAGE : float = 0.7;
+
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
 
@@ -39,13 +41,14 @@ var bubble_grid : Array[Array];
 func _ready():
 	# Level
 	parent_level = get_parent();
-	
+
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
 	init_grid();
 	get_random_bobble();
 	$Tray/Gun/BobbleProp.scale_bobble(bubble_radius);
+	lock_kill_line_to_grid();
 
 func _process(delta):
 	if Input.is_action_pressed("kill"):
@@ -351,6 +354,20 @@ func print_grid(grid_to_print):
 	for row in grid_to_print:
 		print(row);
 
+func get_y_grid_pos_for_kill_line() -> int:
+	var top_border_ypos = $Hitborder/TopWall/CollisionShape2D.global_transform.origin.y + $Hitborder/TopWall/CollisionShape2D.shape.get_rect().size[1];
+	var bobble_game_length = $BackgroundSprite.get_rect().size[1] * global_scale[1];
+
+	return round(((bobble_game_length - bubble_radius) / row_height) * KILL_LINE_PERCENTAGE);
+
+func lock_kill_line_to_grid() -> void:
+	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \
+				($Hitborder/TopWall/CollisionShape2D.shape.get_rect().size.y * $Hitborder/TopWall/CollisionShape2D.global_scale[1]) / 2 + \
+				bubble_radius + get_y_grid_pos_for_kill_line() * row_height;
+
+	$KillLineSprite.global_position[1] = y_pos;
+
+
 func get_nearest_empty_cell(center_of_bobble) -> Vector2i:
 	var top_border_ypos = $Hitborder/TopWall/CollisionShape2D.global_transform.origin.y + $Hitborder/TopWall/CollisionShape2D.shape.get_rect().size[1];
 	
@@ -407,3 +424,15 @@ func individual_raycast(start_pos, direction, last_collider_rid):
 	var should_cast_again = result.collider.is_in_group("rayflector");
 
 	return [ray_cast_start, result.position, should_cast_again, result.rid];
+
+
+func _on_kill_line_body_entered(body):
+	print("Game Over Here");
+
+
+func _on_kill_line_area_entered(area):
+	print("Game Over Here 2");
+
+
+func _on_kill_line_area_shape_entered(area_rid, area, area_shape_index, local_shape_index):
+	print("Game Over Here 3");

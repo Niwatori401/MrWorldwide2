@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dp5aix43qjyis"]
+[gd_scene load_steps=16 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
 [ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/sample/img/sample_bg.png" id="2_fywnk"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sample/sound/shoot.ogg" id="7_oq1dj"]
 [ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble_prop.tscn" id="8_8itb7"]
 [ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/sample/img/sample_progress_bg.png" id="8_ll3oo"]
+[ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/sample/img/kill_line.png" id="10_bifpq"]
 [ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sample/sound/pop.ogg" id="10_jv58l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_piu8p"]
@@ -73,11 +74,17 @@ texture = ExtResource("8_ll3oo")
 
 [node name="ProgressSprite" type="Sprite2D" parent="Tray/ProgressBar"]
 
+[node name="KillLineSprite" type="Sprite2D" parent="."]
+position = Vector2(0.0974121, -35.9351)
+scale = Vector2(0.63961, 0.603896)
+texture = ExtResource("10_bifpq")
+
 [node name="HelpLines" type="Node2D" parent="."]
 
 [node name="Hitborder" type="Node2D" parent="."]
 
 [node name="LeftWall" type="StaticBody2D" parent="Hitborder"]
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/LeftWall"]
 position = Vector2(-255.097, -5.41577)
@@ -85,6 +92,7 @@ shape = SubResource("RectangleShape2D_piu8p")
 debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
 [node name="RightWall" type="StaticBody2D" parent="Hitborder"]
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitborder/RightWall"]
 position = Vector2(255.942, -6.06497)
