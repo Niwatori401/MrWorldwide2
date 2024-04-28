@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bqmxgs4s7mci"]
+[gd_scene load_steps=30 format=3 uid="uid://bqmxgs4s7mci"]
 
 [ext_resource type="Script" path="res://script/level.gd" id="1_kph0n"]
 [ext_resource type="PackedScene" uid="uid://dp5aix43qjyis" path="res://scene/bobble_game.tscn" id="2_tmsy2"]
@@ -23,6 +23,12 @@
 [ext_resource type="Texture2D" uid="uid://coev14bc0kpqs" path="res://asset/level/japan/img/dot/output_028.png" id="21_sf5ri"]
 [ext_resource type="Texture2D" uid="uid://dxvyak5q5v1s5" path="res://asset/level/japan/img/dot/output_030.png" id="22_x1etq"]
 [ext_resource type="PackedScene" uid="uid://44280b3qkc23" path="res://scene/character.tscn" id="23_oolr0"]
+[ext_resource type="Texture2D" uid="uid://bgipn3jkar71e" path="res://asset/sample/img/character/100.png" id="24_0lg25"]
+[ext_resource type="Texture2D" uid="uid://cxtp2epjhsm88" path="res://asset/sample/img/character/140.png" id="25_weamh"]
+[ext_resource type="Texture2D" uid="uid://bp6b4ckba5euo" path="res://asset/sample/img/character/180.png" id="26_hcetr"]
+[ext_resource type="Texture2D" uid="uid://bxwiv4mu256fy" path="res://asset/sample/img/character/260.png" id="27_tm8g0"]
+[ext_resource type="Texture2D" uid="uid://c43mjvw1y5mc8" path="res://asset/sample/img/character/370.png" id="28_7wddf"]
+[ext_resource type="Texture2D" uid="uid://c6cm3rk7a6o6l" path="res://asset/sample/img/character/600.png" id="29_jramr"]
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_kph0n")
@@ -43,3 +49,11 @@ dot_textures = Array[Texture2D]([ExtResource("7_ckbjk"), ExtResource("8_4ic4f"),
 
 [node name="Character" parent="." instance=ExtResource("23_oolr0")]
 point_thresholds = Array[int]([100, 140, 180, 260, 370, 600])
+character_sprites = Array[Texture2D]([ExtResource("24_0lg25"), ExtResource("25_weamh"), ExtResource("26_hcetr"), ExtResource("27_tm8g0"), ExtResource("28_7wddf"), ExtResource("29_jramr")])
+
+[node name="ScoreLabel" type="RichTextLabel" parent="."]
+offset_left = 1212.0
+offset_top = 926.0
+offset_right = 1344.0
+offset_bottom = 987.0
+bbcode_enabled = true

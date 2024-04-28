@@ -1,5 +1,6 @@
 extends StaticBody2D
-signal added_to_tree
+signal added_to_tree;
+signal popped;
 
 var bobble_type : int;
 var pixel_radius : float;
@@ -15,4 +16,5 @@ func scale_bobble():
 	$CollisionShape.scale = Vector2(scale_multiplier_x, scale_multiplier_y);
 
 func pop():
+	emit_signal("popped");
 	queue_free();

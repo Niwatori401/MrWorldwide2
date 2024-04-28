@@ -29,7 +29,7 @@ var row_height : float;
 
 var row_start_offset : int = 0;
 var next_bobble;
-
+var parent_level;
 var can_fire = true;
 
 var help_lines = [];
@@ -37,6 +37,9 @@ var help_lines = [];
 var bubble_grid : Array[Array];
 
 func _ready():
+	# Level
+	parent_level = get_parent();
+	
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
@@ -329,7 +332,7 @@ func lock_bobble_to_grid(bobble, indeces) -> Node2D:
 	static_bobble.pixel_radius = bubble_radius;
 	call_deferred("add_child", static_bobble);
 	static_bobble.connect("added_to_tree", static_bobble.scale_bobble)
-	
+	static_bobble.connect("popped", parent_level.on_bobble_popped);
 	
 	var x_pos = $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x + bobble_x;
 	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \
