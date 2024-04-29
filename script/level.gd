@@ -37,6 +37,8 @@ func update_music():
 	$BGM.stream = music_stages[music_index];
 	$BGM.stream.loop = true;
 	$BGM.play(current_position);
-	
-	
+
+# TODO: Add something for when you lose
+func game_over():
+	print("Game Over - Level")
 

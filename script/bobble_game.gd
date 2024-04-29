@@ -1,5 +1,7 @@
 extends Node2D
 
+signal game_over;
+
 @export var bobble_set : Array[PackedScene];
 @export var SECONDS_BETWEEN_SHOTS : float = 1.0;
 var cur_seconds_after_shot : float = 0;
@@ -41,7 +43,8 @@ var bubble_grid : Array[Array];
 func _ready():
 	# Level
 	parent_level = get_parent();
-
+	connect("game_over", parent_level.game_over)
+	
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
@@ -154,7 +157,6 @@ func init_grid():
 		bubble_grid.append(new_row);
 
 
-
 func get_random_bobble():
 	next_bobble = bobble_set.pick_random().instantiate();
 	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble)
@@ -202,6 +204,9 @@ func handle_collision(bobble):
 		$SFX/Pop/PopSound.play();
 		
 	$SFX/Pop/DelayBetweenPopTimer.stop();
+	
+	if should_fail():
+		game_over.emit();
 
 func dfs(grid : Array[Array], row : int, col : int):
 	if grid[row][col] == null or grid[row][col].is_queued_for_deletion():
@@ -226,8 +231,8 @@ func dfs(grid : Array[Array], row : int, col : int):
 			continue;
 		
 		dfs(grid, new_row, new_col);	
-	
-	
+
+
 func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_list : Array[Vector2]):
 	if grid[row][col] == null:
 		return;
@@ -424,3 +429,10 @@ func individual_raycast(start_pos, direction, last_collider_rid):
 	var should_cast_again = result.collider.is_in_group("rayflector");
 
 	return [ray_cast_start, result.position, should_cast_again, result.rid];
+
+func should_fail():
+	for entry in bubble_grid[get_y_grid_pos_for_kill_line()]:
+		if entry != null:
+			return true;
+	return false;
+
