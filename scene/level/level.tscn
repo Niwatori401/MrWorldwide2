@@ -1,11 +1,17 @@
-[gd_scene load_steps=30 format=3 uid="uid://bqmxgs4s7mci"]
+[gd_scene load_steps=36 format=3 uid="uid://bqmxgs4s7mci"]
 
 [ext_resource type="Script" path="res://script/level.gd" id="1_kph0n"]
+[ext_resource type="AudioStream" uid="uid://c6yrqb1nevnna" path="res://asset/sample/sound/song_1.ogg" id="2_ebkqq"]
 [ext_resource type="PackedScene" uid="uid://dp5aix43qjyis" path="res://scene/bobble_game.tscn" id="2_tmsy2"]
 [ext_resource type="Texture2D" uid="uid://crp8x57ho8lkn" path="res://asset/level/japan/img/stage_bg.png" id="2_vt70i"]
+[ext_resource type="AudioStream" uid="uid://wikn1gn1mlyl" path="res://asset/sample/sound/song_2.ogg" id="3_5gvfr"]
+[ext_resource type="AudioStream" uid="uid://dchgswqetw7nu" path="res://asset/sample/sound/song_3.ogg" id="4_dvxtk"]
 [ext_resource type="PackedScene" uid="uid://c36v4g3kn187f" path="res://scene/bobble/bobble1.tscn" id="4_ktllo"]
+[ext_resource type="AudioStream" uid="uid://c2dd2rr0tneic" path="res://asset/sample/sound/song_4.ogg" id="5_bmg7x"]
 [ext_resource type="PackedScene" uid="uid://bife845efq5h1" path="res://scene/bobble/bobble2.tscn" id="5_nvfkk"]
 [ext_resource type="PackedScene" uid="uid://ctmn4uhrl08v0" path="res://scene/bobble/bobble3.tscn" id="6_a1gks"]
+[ext_resource type="AudioStream" uid="uid://djwdb3t8wnd4i" path="res://asset/sample/sound/song_5.ogg" id="6_rqipa"]
+[ext_resource type="AudioStream" uid="uid://c63wj6akojtti" path="res://asset/sample/sound/song_6.ogg" id="7_3wv1j"]
 [ext_resource type="Texture2D" uid="uid://ca7rvhp6y41ws" path="res://asset/level/japan/img/dot/output_000.png" id="7_ckbjk"]
 [ext_resource type="Texture2D" uid="uid://dccylv3xjkgpu" path="res://asset/level/japan/img/dot/output_002.png" id="8_4ic4f"]
 [ext_resource type="Texture2D" uid="uid://3hid5p66tigv" path="res://asset/level/japan/img/dot/output_004.png" id="9_sir74"]
@@ -32,6 +38,7 @@
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_kph0n")
+music_stages = Array[AudioStream]([ExtResource("2_ebkqq"), ExtResource("3_5gvfr"), ExtResource("4_dvxtk"), ExtResource("5_bmg7x"), ExtResource("6_rqipa"), ExtResource("7_3wv1j")])
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(960.623, 548.027)
@@ -58,3 +65,6 @@ offset_top = 926.0
 offset_right = 1344.0
 offset_bottom = 987.0
 bbcode_enabled = true
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+volume_db = -7.914

@@ -3,11 +3,16 @@
 [ext_resource type="Script" path="res://script/character.gd" id="1_q3sok"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_00jb6"]
-animations = []
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"h",
+"speed": 5.0
+}]
 
 [node name="Character" type="Node2D"]
 script = ExtResource("1_q3sok")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_00jb6")
-animation = &""
+animation = &"h"

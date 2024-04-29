@@ -355,7 +355,7 @@ func print_grid(grid_to_print):
 		print(row);
 
 func get_y_grid_pos_for_kill_line() -> int:
-	var top_border_ypos = $Hitborder/TopWall/CollisionShape2D.global_transform.origin.y + $Hitborder/TopWall/CollisionShape2D.shape.get_rect().size[1];
+
 	var bobble_game_length = $BackgroundSprite.get_rect().size[1] * global_scale[1];
 
 	return round(((bobble_game_length - bubble_radius) / row_height) * KILL_LINE_PERCENTAGE);
@@ -424,15 +424,3 @@ func individual_raycast(start_pos, direction, last_collider_rid):
 	var should_cast_again = result.collider.is_in_group("rayflector");
 
 	return [ray_cast_start, result.position, should_cast_again, result.rid];
-
-
-func _on_kill_line_body_entered(body):
-	print("Game Over Here");
-
-
-func _on_kill_line_area_entered(area):
-	print("Game Over Here 2");
-
-
-func _on_kill_line_area_shape_entered(area_rid, area, area_shape_index, local_shape_index):
-	print("Game Over Here 3");
