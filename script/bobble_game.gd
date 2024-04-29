@@ -40,6 +40,9 @@ var help_lines = [];
 
 var bubble_grid : Array[Array];
 
+var override_left : bool = false;
+var override_right : bool = false;
+
 func _ready():
 	# Level
 	parent_level = get_parent();
@@ -76,9 +79,21 @@ func _process(delta):
 	if Input.is_action_pressed("shift"):
 		speed_multiplier = 0.2;
 	
-	if Input.is_action_pressed("left"):
+	if Input.is_action_just_pressed("left"):
+		override_right = true;
+		override_left =false;
+	if Input.is_action_just_pressed("right"):
+		override_left = true;
+		override_right = false;
+	
+	if override_left and Input.is_action_just_released("right"):
+		override_left = false;
+	if override_right and Input.is_action_just_released("left"):
+		override_right = false;
+	
+	if not override_left and Input.is_action_pressed("left"):
 		try_rotate_left(delta, speed_multiplier);
-	if Input.is_action_pressed("right"):
+	if not override_right and Input.is_action_pressed("right"):
 		try_rotate_right(delta, speed_multiplier);
 	if Input.is_action_just_pressed("up") and can_fire:
 		fire_bobble();
