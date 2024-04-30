@@ -259,8 +259,8 @@ func dfs_for_floating_bobbles(grid : Array[Array], row : int, col : int):
 	grid[row][col] = null;
 	
 	# (Row, Col)
-	var directions_from_big = [Vector2(1, 0), Vector2(1, -1), Vector2(0, -1), Vector2(0, 1)];
-	var directions_from_small = [Vector2(0, -1), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1)];
+	var directions_from_big = [Vector2(1, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0), Vector2(-1, -1) ];
+	var directions_from_small = [Vector2(1, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, 1), Vector2(-1, 0), Vector2(-1, 1)];
 
 	var directions = directions_from_small if is_small_row(row) else directions_from_big;
 		
