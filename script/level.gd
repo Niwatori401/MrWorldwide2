@@ -3,17 +3,23 @@ extends Node2D
 @export var background_image : Texture2D;
 @export var music_stages : Array[AudioStream];
 
+const MUTE = false;
 var cur_points : int = 0;
 const POINTS_PER_BOBBLE : int = 20;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if MUTE:
+		AudioServer.set_bus_volume_db(0, -100);
+	
 	$Character.update_scale();
 	$Character.center_on_screen();
 	$Character.set_sprite_stage_by_points(cur_points);
 	assert($Character.get_stage_count() == music_stages.size());
 	update_score_text();
 	update_music();
+	
+	
 
 func on_bobble_popped():
 	cur_points += 20;

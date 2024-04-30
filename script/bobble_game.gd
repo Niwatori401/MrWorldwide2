@@ -4,6 +4,7 @@ signal game_over;
 
 @export var bobble_set : Array[PackedScene];
 @export var SECONDS_BETWEEN_SHOTS : float = 1.0;
+@export var initial_rows_count : int = 4;
 var cur_seconds_after_shot : float = 0;
 
 const MAX_ROTATION_ABSOLUTE : float = deg_to_rad(80);
@@ -19,6 +20,10 @@ const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
 
 var food_prop_blueprint = load("res://scene/food_prop.tscn");
+const FOOD_PROP_X_VELOCITY_RANGE := Vector2(-100, 100);
+const FOOD_PROP_Y_VELOCITY_RANGE := Vector2(-300, -500);
+
+
 var static_bobble_blueprint : PackedScene = preload("res://scene/static_bobble.tscn");
 var current_rotation = 0;
 
@@ -27,11 +32,11 @@ var dot_texture_index : int = 0;
 const dot_seconds_per_cycle : float = 0.2;
 var elapsed_seconds_for_dot : float = 0;
 
-@export var cell_count_horizontal = 7;
+@export var cell_count_horizontal := 7;
 var bubble_radius : float;
 var row_height : float;
 
-var row_start_offset : int = 0;
+var row_offset_count : int = 0;
 var next_bobble;
 var parent_level;
 var can_fire = true;
@@ -40,11 +45,12 @@ var help_lines = [];
 
 var bubble_grid : Array[Array];
 
-var override_left : bool = false;
-var override_right : bool = false;
+# These are used to prevent pressing left and right cancelling each other out for input.
+var override_left := false;
+var override_right := false;
 
 func _ready():
-	# Level
+	# level.tscn
 	parent_level = get_parent();
 	connect("game_over", parent_level.game_over)
 	
@@ -52,13 +58,17 @@ func _ready():
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
 	init_grid();
-	get_random_bobble();
+	set_next_bobble();
 	$Tray/Gun/BobbleProp.scale_bobble(bubble_radius);
 	lock_kill_line_to_grid();
 
 func _process(delta):
 	if Input.is_action_pressed("kill"):
-		get_tree().quit()
+		get_tree().quit();
+	
+	if Input.is_action_just_pressed("debug_1"):
+		add_next_row();
+
 	
 	if Input.is_action_pressed("fullscreen"):
 		if get_viewport().mode == Window.MODE_MAXIMIZED:
@@ -72,7 +82,7 @@ func _process(delta):
 		if cur_seconds_after_shot >= SECONDS_BETWEEN_SHOTS:
 			cur_seconds_after_shot = 0;
 			can_fire = true;
-			get_random_bobble();
+			set_next_bobble();
 			$Tray/Gun/BobbleProp.visible = true;
 	
 	var speed_multiplier = 1.0;
@@ -150,35 +160,58 @@ func add_hitboxes_for_help_lines():
 	right_wall.global_position = $Hitborder/RightWall.global_position + Vector2(-bubble_radius, 0);
 	top_wall.global_position = $Hitborder/TopWall.global_position + Vector2(0, bubble_radius);
 	
+
+func add_next_row():
+	row_offset_count += 1;
 	
+	
+	for row in range(bubble_grid.size()):
+		for col in range(bubble_grid[row].size()):
+			if bubble_grid[row][col] == null:
+				continue;
+				
+			lock_bobble_to_grid(bubble_grid[row][col], Vector2i(col, row + 1), false); 
+	
+	
+	var new_row = [];
+	
+	for i in range(cell_count_horizontal - 1 if is_small_row(0) else cell_count_horizontal):
+		new_row.append(lock_bobble_to_grid(bobble_set.pick_random().instantiate(), Vector2i(i, 0)));
+		
+	bubble_grid.insert(0, new_row);
+
 func init_grid():
 	var max_rows = ($BackgroundSprite.get_rect().size[1] * $BackgroundSprite.global_scale[1]) / row_height;
 	# Increase max rows just to be extra safe in case of OOB or near OOB shots
 	max_rows = int(max_rows * 1.2);
 
 	for i in range(max_rows):
-		var new_row;
-		if i % 2 == 0:
-			# Make big row
-			new_row = [];
-			for j in range(cell_count_horizontal):
-				new_row.append(null);
-		else:
-			# Make small row
-			new_row = [];
-			for j in range(cell_count_horizontal - 1):
-				new_row.append(null); 
-			
+		
+		var new_row = [];
+		
+		for j in range(cell_count_horizontal - 1 if is_small_row(i) else cell_count_horizontal):
+			new_row.append(null); 
+
 		bubble_grid.append(new_row);
+	
+	# Gives enough time for the previous add_child calls to execute
+	$Timers/AddRowTimer.start();
+	for i in range(initial_rows_count):
+		await $Timers/AddRowTimer.timeout;
+		$SFX/NewRowSound.play();
+		add_next_row();
+	$Timers/AddRowTimer.stop();
 
 
-func get_random_bobble():
+func set_next_bobble():
 	next_bobble = bobble_set.pick_random().instantiate();
 	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble)
 
 
-func launch_bobble():
-	# Adjust scale
+
+func fire_bobble():
+	$Tray/Gun/ShootSound.play();
+	
 	next_bobble.scale_bobble(bubble_radius);
 	
 	add_child(next_bobble);
@@ -186,10 +219,6 @@ func launch_bobble():
 	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
 	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
 
-
-func fire_bobble():
-	$Tray/Gun/ShootSound.play();
-	launch_bobble();
 	$Tray/Gun/BobbleProp.visible = false;
 	can_fire = false;
 
@@ -204,26 +233,26 @@ func try_rotate_right(delta, speed_multiplier = 1.0):
 
 func handle_collision(bobble):
 	
-	freeze_bobble_in_place(bobble);
+	var impact_location = freeze_bobble_in_place(bobble);
 	# Allows the static bobble to initialize completely
-	$PopCooldown.start();
-	await $PopCooldown.timeout;
-	var pop_count_1 = pop_eligible_bobbles();
+	$Timers/PopCooldown.start();
+	await $Timers/PopCooldown.timeout;
+	var pop_count_1 = pop_eligible_bobbles(impact_location);
 	var pop_count_2 = pop_floating_bobbles();
 	
-	$SFX/Pop/DelayBetweenPopTimer.start();
+	$Timers/DelayBetweenPopTimer.start();
 	
 	for _i in range(pop_count_1 + pop_count_2):
-		await $SFX/Pop/DelayBetweenPopTimer.timeout	
-		$SFX/Pop/PopSound.pitch_scale = randf_range(MIN_POP_PITCH, MAX_POP_PITCH);
-		$SFX/Pop/PopSound.play();
+		await $Timers/DelayBetweenPopTimer.timeout	
+		$SFX/PopSound.pitch_scale = randf_range(MIN_POP_PITCH, MAX_POP_PITCH);
+		$SFX/PopSound.play();
 		
-	$SFX/Pop/DelayBetweenPopTimer.stop();
+	$Timers/DelayBetweenPopTimer.stop();
 	
 	if should_fail():
 		game_over.emit();
 
-func dfs(grid : Array[Array], row : int, col : int):
+func dfs_for_floating_bobbles(grid : Array[Array], row : int, col : int):
 	if grid[row][col] == null or grid[row][col].is_queued_for_deletion():
 		return;
 
@@ -233,7 +262,7 @@ func dfs(grid : Array[Array], row : int, col : int):
 	var directions_from_big = [Vector2(1, 0), Vector2(1, -1), Vector2(0, -1), Vector2(0, 1)];
 	var directions_from_small = [Vector2(0, -1), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1)];
 
-	var directions = directions_from_big if row % 2 == 0 else directions_from_small;
+	var directions = directions_from_small if is_small_row(row) else directions_from_big;
 		
 	for direction in directions:
 		var new_row = row + direction[0];
@@ -245,10 +274,9 @@ func dfs(grid : Array[Array], row : int, col : int):
 		   grid[new_row][new_col].is_queued_for_deletion():
 			continue;
 		
-		dfs(grid, new_row, new_col);	
+		dfs_for_floating_bobbles(grid, new_row, new_col);	
 
-
-func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_list : Array[Vector2]):
+func dfs_for_elligible_bobbles(grid : Array[Array], row : int, col : int, cur_type : int, cur_list : Array[Vector2]):
 	if grid[row][col] == null:
 		return;
 	
@@ -256,10 +284,10 @@ func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_li
 	grid[row][col] = null;
 	
 	# (Row, Col)
-	var directions_from_big = [Vector2(1, 0), Vector2(1, -1), Vector2(0, -1), Vector2(0, 1)];
-	var directions_from_small = [Vector2(0, -1), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1)];
+	var directions_from_big = [Vector2(1, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, -1), Vector2(-1, 0), Vector2(-1, -1) ];
+	var directions_from_small = [Vector2(1, 0), Vector2(0, 1), Vector2(0, -1), Vector2(1, 1), Vector2(-1, 0), Vector2(-1, 1)];
 
-	var directions = directions_from_big if row % 2 == 0 else directions_from_small;
+	var directions = directions_from_small if is_small_row(row) else directions_from_big;
 		
 	for direction in directions:
 		var new_row = row + direction[0];
@@ -270,24 +298,20 @@ func dfs_typed(grid : Array[Array], row : int, col : int, cur_type : int, cur_li
 		   grid[new_row][new_col] == null or grid[new_row][new_col].bobble_type != cur_type:
 			continue;
 		
-		dfs_typed(grid, new_row, new_col, cur_type, cur_list);
+		dfs_for_elligible_bobbles(grid, new_row, new_col, cur_type, cur_list);
 		
 # returns number of bobbles popped
-func pop_eligible_bobbles() -> int:
+func pop_eligible_bobbles(impact_location : Vector2i) -> int:
 	# Perform deep copy
 	var grid_copy = bubble_grid.duplicate(true);
 	var pop_count = 0;
-	for row in range(grid_copy.size()):
-		for col in range(grid_copy[row].size()):
-			
-			if grid_copy[row][col] == null:
-				continue;
-			
-			var eligible_bobbles : Array[Vector2]= [];	
-			dfs_typed(grid_copy, row, col, grid_copy[row][col].bobble_type, eligible_bobbles);
-			
-			if eligible_bobbles.size() >= 3:
-				pop_count += pop_bobbles_at_coords(eligible_bobbles);
+
+	var eligible_bobbles : Array[Vector2]= [];	
+
+	dfs_for_elligible_bobbles(grid_copy, impact_location[0], impact_location[1], grid_copy[impact_location[0]][impact_location[1]].bobble_type, eligible_bobbles);
+	
+	if eligible_bobbles.size() >= 3:
+		pop_count += destroy_bobbles_at_coords(eligible_bobbles);
 				
 	
 	return pop_count;
@@ -298,7 +322,7 @@ func pop_floating_bobbles() -> int:
 	# Perform deep copy
 	var grid_copy = bubble_grid.duplicate(true);
 	for col in range(grid_copy[0].size()):
-		dfs(grid_copy, 0 , col);
+		dfs_for_floating_bobbles(grid_copy, 0 , col);
 	
 	var floating_bobbles : Array[Vector2]= [];	
 	for row in range(grid_copy.size()):
@@ -309,9 +333,9 @@ func pop_floating_bobbles() -> int:
 			
 			floating_bobbles.append(Vector2(row, col));
 		
-	return pop_bobbles_at_coords(floating_bobbles);
+	return destroy_bobbles_at_coords(floating_bobbles);
 
-func pop_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
+func destroy_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 	var count_to_pop = 0;
 	for coord in coord_list:
 		if not bubble_grid[coord[0]][coord[1]].is_queued_for_deletion():
@@ -326,48 +350,53 @@ func spawn_props(bobble):
 	prop.scale_bobble(bubble_radius);
 	prop.copy_bobble_textures(bobble);
 	add_child(prop);
-	var impulse_vector = Vector2(randf_range(-100, 100), randf_range(-300, -500));
+	var impulse_vector = Vector2(randf_range(FOOD_PROP_X_VELOCITY_RANGE[0], FOOD_PROP_X_VELOCITY_RANGE[1]), randf_range(FOOD_PROP_Y_VELOCITY_RANGE[0], FOOD_PROP_Y_VELOCITY_RANGE[1]));
 	prop.apply_central_impulse(impulse_vector);
 	
 	prop.set_global_position(bobble.global_position)
 
 
-func freeze_bobble_in_place(bobble):
+func freeze_bobble_in_place(bobble) -> Vector2i:
 	var cell_indeces = get_nearest_empty_cell(bobble.global_position + Vector2(bubble_radius, bubble_radius));
 	bubble_grid[cell_indeces[1]][cell_indeces[0]] = lock_bobble_to_grid(bobble, cell_indeces);
+	bobble.queue_free();
+	return Vector2i(cell_indeces[1], cell_indeces[0]);
 	
-func lock_bobble_to_grid(bobble, indeces) -> Node2D:
-	var is_small_row : bool = indeces[1] % 2 == 1;
+func lock_bobble_to_grid(bobble, indeces, replace_node = true) -> Node2D:
+
 	var bobble_x : float;
 	var bobble_y : float;
 	
-	if is_small_row:
+	if is_small_row(indeces[1]):
 		bobble_x = bubble_radius * 2 * (indeces[0] + 1);
 	else:
 		bobble_x = bubble_radius + bubble_radius * 2 * (indeces[0]);
 	
 	bobble_y = indeces[1] * row_height;
 	
-	
-	var static_bobble = static_bobble_blueprint.instantiate();
-	static_bobble.collision_layer |= RAYCAST_COLLISION_LAYER; 
-	
-	static_bobble.pixel_radius = bubble_radius;
-	call_deferred("add_child", static_bobble);
-	static_bobble.connect("added_to_tree", static_bobble.scale_bobble)
-	static_bobble.connect("popped", parent_level.on_bobble_popped);
-	
 	var x_pos = $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x + bobble_x;
 	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \
 				($Hitborder/TopWall/CollisionShape2D.shape.get_rect().size.y * $Hitborder/TopWall/CollisionShape2D.global_scale[1]) / 2 + \
 				bubble_radius + bobble_y;
-				
-	static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
-	static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
-	static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
 	
-	static_bobble.bobble_type = bobble.bobble_type;
-	bobble.queue_free();
+	var static_bobble;
+	
+	if replace_node:
+		static_bobble = static_bobble_blueprint.instantiate();
+		static_bobble.collision_layer |= RAYCAST_COLLISION_LAYER; 
+		
+		static_bobble.pixel_radius = bubble_radius;
+		call_deferred("add_child", static_bobble);
+		static_bobble.connect("added_to_tree", static_bobble.scale_bobble)
+		static_bobble.connect("popped", parent_level.on_bobble_popped);
+		static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
+		static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
+		static_bobble.bobble_type = bobble.bobble_type;
+		static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
+	else:
+		static_bobble = bobble;
+		static_bobble.global_position = Vector2(x_pos, y_pos);
+	
 	return static_bobble;
 
 func print_grid(grid_to_print):
@@ -398,10 +427,9 @@ func get_nearest_empty_cell(center_of_bobble) -> Vector2i:
 	center_of_bobble[0] -= $Hitborder/LeftWall/CollisionShape2D.global_transform.origin.x
 	
 	var row_number : int = round((center_of_bobble[1] - 2 * bubble_radius) / row_height);
-	var is_small_row : bool = (row_number - row_start_offset) % 2 == 1;
 	var column_number : int;
 	
-	if is_small_row:
+	if is_small_row(row_number):
 		column_number = round((center_of_bobble[0] - bubble_radius) / (2 * bubble_radius)) - 1;
 	else:
 		column_number = round((center_of_bobble[0])/ (2 * bubble_radius)) - 1;
@@ -450,4 +478,7 @@ func should_fail():
 		if entry != null:
 			return true;
 	return false;
+
+func is_small_row(row_number):
+	return (row_number + row_offset_count) % 2 == 1;
 

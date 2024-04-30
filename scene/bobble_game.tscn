@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dp5aix43qjyis"]
+[gd_scene load_steps=17 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
 [ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/sample/img/sample_bg.png" id="2_fywnk"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/sample/img/sample_progress_bg.png" id="8_ll3oo"]
 [ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/sample/img/kill_line.png" id="10_bifpq"]
 [ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sample/sound/pop.ogg" id="10_jv58l"]
+[ext_resource type="AudioStream" uid="uid://dxddqaw5saavi" path="res://asset/sample/sound/row_add.ogg" id="12_dcmtr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_piu8p"]
 size = Vector2(3.89617, 705.195)
@@ -112,13 +113,19 @@ shape = SubResource("RectangleShape2D_dtkss")
 
 [node name="SFX" type="Node" parent="."]
 
-[node name="Pop" type="Node" parent="SFX"]
-
-[node name="PopSound" type="AudioStreamPlayer" parent="SFX/Pop"]
+[node name="PopSound" type="AudioStreamPlayer" parent="SFX"]
 stream = ExtResource("10_jv58l")
 
-[node name="DelayBetweenPopTimer" type="Timer" parent="SFX/Pop"]
+[node name="NewRowSound" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("12_dcmtr")
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DelayBetweenPopTimer" type="Timer" parent="Timers"]
 wait_time = 0.05
 
-[node name="PopCooldown" type="Timer" parent="."]
+[node name="PopCooldown" type="Timer" parent="Timers"]
 wait_time = 0.06
+
+[node name="AddRowTimer" type="Timer" parent="Timers"]
+wait_time = 0.25
