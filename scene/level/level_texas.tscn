@@ -1,0 +1,37 @@
+[gd_scene load_steps=20 format=3 uid="uid://ccgebs0d05yuu"]
+
+[ext_resource type="PackedScene" uid="uid://bqmxgs4s7mci" path="res://scene/level/level.tscn" id="1_logpx"]
+[ext_resource type="Texture2D" uid="uid://dbw4tfmnsci74" path="res://asset/level/texas/img/stage_bg.png" id="2_2lwas"]
+[ext_resource type="Texture2D" uid="uid://dwp3ofdwowxj5" path="res://asset/level/texas/img/game_bg.png" id="3_rjh7u"]
+[ext_resource type="AudioStream" uid="uid://bmnm24r6guwr5" path="res://asset/level/texas/audio/texas_1.ogg" id="4_chwbt"]
+[ext_resource type="PackedScene" uid="uid://bum73hl1jxfiw" path="res://scene/bobble/bobble_frenchfries.tscn" id="4_s378n"]
+[ext_resource type="AudioStream" uid="uid://cchy5hcgfcnh5" path="res://asset/level/texas/audio/texas_2.ogg" id="5_c0ept"]
+[ext_resource type="PackedScene" uid="uid://b06mcmyl5nyi" path="res://scene/bobble/bobble_croquet2.tscn" id="5_gdrg7"]
+[ext_resource type="AudioStream" uid="uid://d2fki4374l5id" path="res://asset/level/texas/audio/texas_3.ogg" id="6_8seb8"]
+[ext_resource type="PackedScene" uid="uid://c1i4t2mvbiwe7" path="res://scene/bobble/bobble_eggbacon.tscn" id="6_ilhqi"]
+[ext_resource type="AudioStream" uid="uid://b1j3m5xspolbi" path="res://asset/level/texas/audio/texas_4.ogg" id="7_43epf"]
+[ext_resource type="PackedScene" uid="uid://rvu1x1fjd7ap" path="res://scene/bobble/bobble_hamburger.tscn" id="7_nffr1"]
+[ext_resource type="Texture2D" uid="uid://b4a76gru72wc4" path="res://asset/level/texas/img/character/100.png" id="8_3bmvc"]
+[ext_resource type="AudioStream" uid="uid://ncumy4smg6xf" path="res://asset/level/texas/audio/texas_5.ogg" id="8_j4c5c"]
+[ext_resource type="AudioStream" uid="uid://dlpj6etf37i8m" path="res://asset/level/texas/audio/texas_6.ogg" id="8_ya88r"]
+[ext_resource type="Texture2D" uid="uid://pwqkb1fxe3nu" path="res://asset/level/texas/img/character/150.png" id="9_tou50"]
+[ext_resource type="Texture2D" uid="uid://b2e1c53b8qa73" path="res://asset/level/texas/img/character/200.png" id="10_1xntv"]
+[ext_resource type="Texture2D" uid="uid://bhn2mhwt80um3" path="res://asset/level/texas/img/character/300.png" id="11_df1y1"]
+[ext_resource type="Texture2D" uid="uid://cuv6kidxy0ecu" path="res://asset/level/texas/img/character/500.png" id="12_wxsad"]
+[ext_resource type="Texture2D" uid="uid://fne1bnvvecdk" path="res://asset/level/texas/img/character/700.png" id="13_yidvp"]
+
+[node name="Level" instance=ExtResource("1_logpx")]
+background_image = ExtResource("2_2lwas")
+music_stages = Array[AudioStream]([ExtResource("4_chwbt"), ExtResource("5_c0ept"), ExtResource("6_8seb8"), ExtResource("7_43epf"), ExtResource("8_j4c5c"), ExtResource("8_ya88r")])
+
+[node name="BobbleGame" parent="." index="1"]
+background_sprite = ExtResource("3_rjh7u")
+bobble_set = Array[PackedScene]([ExtResource("4_s378n"), ExtResource("5_gdrg7"), ExtResource("6_ilhqi"), ExtResource("7_nffr1")])
+initial_rows_count = 2
+cell_count_horizontal = 6
+seconds_per_row = 15.0
+min_seconds_per_row = 12.0
+
+[node name="Character" parent="." index="3"]
+point_thresholds = Array[int]([100, 150, 200, 300, 500])
+character_sprites = Array[Texture2D]([ExtResource("8_3bmvc"), ExtResource("9_tou50"), ExtResource("10_1xntv"), ExtResource("11_df1y1"), ExtResource("12_wxsad"), ExtResource("13_yidvp")])

@@ -1,16 +1,17 @@
-[gd_scene load_steps=16 format=3 uid="uid://dp5aix43qjyis"]
+[gd_scene load_steps=17 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
-[ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/sample/img/sample_bg.png" id="2_fywnk"]
-[ext_resource type="Texture2D" uid="uid://cemrtiufllac" path="res://asset/sample/img/sample_tray_bg.png" id="3_e2arr"]
-[ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/sample/img/sample_score_bg.png" id="4_4xtpx"]
-[ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/sample/img/sample_shoot_base.png" id="5_s78fh"]
-[ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/sample/img/sample_shoot_arrow.png" id="6_ljkhq"]
-[ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sample/sound/shoot.ogg" id="7_oq1dj"]
+[ext_resource type="Texture2D" uid="uid://cayw44iau0pdk" path="res://asset/level/japan/img/game_bg_border.png" id="2_62l57"]
+[ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/DEFAULT/img/sample_bg.png" id="3_o75l3"]
+[ext_resource type="Texture2D" uid="uid://cemrtiufllac" path="res://asset/DEFAULT/img/sample_tray_bg.png" id="4_rbqmw"]
+[ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/DEFAULT/img/sample_score_bg.png" id="5_v1o3s"]
+[ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/DEFAULT/img/sample_shoot_base.png" id="6_jwb1a"]
+[ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/DEFAULT/img/sample_shoot_arrow.png" id="7_jyo66"]
 [ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble_prop.tscn" id="8_8itb7"]
-[ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/sample/img/kill_line.png" id="10_bifpq"]
-[ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sample/sound/pop.ogg" id="10_jv58l"]
-[ext_resource type="AudioStream" uid="uid://dxddqaw5saavi" path="res://asset/sample/sound/row_add.ogg" id="12_dcmtr"]
+[ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/DEFAULT/sound/shoot.ogg" id="8_ktd4x"]
+[ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/DEFAULT/img/kill_line.png" id="10_qq7ho"]
+[ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/DEFAULT/sound/pop.ogg" id="11_vepe5"]
+[ext_resource type="AudioStream" uid="uid://dxddqaw5saavi" path="res://asset/DEFAULT/sound/row_add.ogg" id="12_yj1p7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_piu8p"]
 size = Vector2(3.89617, 705.195)
@@ -29,21 +30,27 @@ position = Vector2(559.925, 335.67)
 scale = Vector2(0.77, 0.77)
 script = ExtResource("1_mwlaa")
 
+[node name="GameBGBorder" type="Sprite2D" parent="."]
+scale = Vector2(1, 1)
+texture = ExtResource("2_62l57")
+
 [node name="BackgroundSprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_fywnk")
+texture = ExtResource("3_o75l3")
 
 [node name="Tray" type="Node2D" parent="."]
 
 [node name="TraySprite" type="Sprite2D" parent="Tray"]
+visible = false
 position = Vector2(0, 299.045)
 scale = Vector2(1, 0.544237)
-texture = ExtResource("3_e2arr")
+texture = ExtResource("4_rbqmw")
 
 [node name="Score" type="Node2D" parent="Tray"]
 position = Vector2(-175, 300)
 
 [node name="ScoreBackground" type="Sprite2D" parent="Tray/Score"]
-texture = ExtResource("4_4xtpx")
+visible = false
+texture = ExtResource("5_v1o3s")
 
 [node name="ScoreLabel" type="RichTextLabel" parent="Tray/Score"]
 offset_right = 40.0
@@ -54,13 +61,13 @@ position = Vector2(0, 260)
 scale = Vector2(0.34, 0.34)
 
 [node name="GunBase" type="Sprite2D" parent="Tray/Gun"]
-texture = ExtResource("5_s78fh")
+texture = ExtResource("6_jwb1a")
 
 [node name="GunBarrel" type="Sprite2D" parent="Tray/Gun"]
-texture = ExtResource("6_ljkhq")
+texture = ExtResource("7_jyo66")
 
 [node name="ShootSound" type="AudioStreamPlayer" parent="Tray/Gun"]
-stream = ExtResource("7_oq1dj")
+stream = ExtResource("8_ktd4x")
 
 [node name="BobbleProp" parent="Tray/Gun" instance=ExtResource("8_8itb7")]
 
@@ -77,14 +84,13 @@ antialiased = true
 
 [node name="ProgressPolygonDisabledShader" type="Polygon2D" parent="Tray/ProgressBar"]
 position = Vector2(178.61, 292.95)
-scale = Vector2(1, 1)
 color = Color(0.113725, 0.113725, 0.113725, 0.870588)
 antialiased = true
 
 [node name="KillLineSprite" type="Sprite2D" parent="."]
 position = Vector2(0.0974121, -35.9351)
 scale = Vector2(0.63961, 0.603896)
-texture = ExtResource("10_bifpq")
+texture = ExtResource("10_qq7ho")
 
 [node name="HelpLines" type="Node2D" parent="."]
 
@@ -120,10 +126,10 @@ shape = SubResource("RectangleShape2D_dtkss")
 [node name="SFX" type="Node" parent="."]
 
 [node name="PopSound" type="AudioStreamPlayer" parent="SFX"]
-stream = ExtResource("10_jv58l")
+stream = ExtResource("11_vepe5")
 
 [node name="NewRowSound" type="AudioStreamPlayer" parent="SFX"]
-stream = ExtResource("12_dcmtr")
+stream = ExtResource("12_yj1p7")
 
 [node name="Timers" type="Node" parent="."]
 

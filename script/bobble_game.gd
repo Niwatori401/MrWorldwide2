@@ -2,6 +2,9 @@ extends Node2D
 
 signal game_over;
 
+@export var background_sprite : Texture2D;
+@export var tray_sprite : Texture2D;
+
 @export var bobble_set : Array[PackedScene];
 @export var SECONDS_BETWEEN_SHOTS : float = 1.0;
 @export var initial_rows_count : int = 4;
@@ -14,7 +17,7 @@ const LAUNCH_SPEED_MAGNITUDE : float = 900;
 const RAYCAST_COLLISION_LAYER : int = 0b0010;
 const BOBBLE_COLLISION_LAYER : int = 0b0001;
 
-const KILL_LINE_PERCENTAGE : float = 0.7;
+const KILL_LINE_PERCENTAGE : float = 0.85;
 
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
@@ -57,7 +60,6 @@ const CIRCLE_ANGLE_OFFSET : float = deg_to_rad(270);
 var elapsed_seconds_for_new_row : float = 0;
 
 
-
 # These are used to prevent pressing left and right cancelling each other out for input.
 var override_left := false;
 var override_right := false;
@@ -67,6 +69,7 @@ func _ready():
 	parent_level = get_parent();
 	connect("game_over", parent_level.game_over)
 	init_background_progress_bar_points();
+	init_exported_sprites();
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
@@ -242,7 +245,6 @@ func fire_bobble():
 	
 	add_child(next_bobble);
 	next_bobble.connect("impacted", handle_collision);
-	next_bobble.connect("impacted", decrement_flying_bobbles);
 	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
 	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
 
@@ -255,7 +257,7 @@ func should_spawn_next_row() -> bool:
 func increment_flying_bobbles():
 	flying_bobble_count += 1;
 
-func decrement_flying_bobbles(_bobble):
+func decrement_flying_bobbles():
 	flying_bobble_count -= 1;
 
 func try_rotate_left(delta, speed_multiplier = 1.0):
@@ -275,6 +277,8 @@ func handle_collision(bobble):
 	var pop_count_1 = pop_eligible_bobbles(impact_location);
 	var pop_count_2 = pop_floating_bobbles();
 	
+	# Decrementing here rather than above prevents bugs where the row moves between PopCooldown.start() and timeout.
+	decrement_flying_bobbles();
 	$Timers/DelayBetweenPopTimer.start();
 	
 	for _i in range(pop_count_1 + pop_count_2):
@@ -394,6 +398,23 @@ func spawn_props(bobble):
 
 func freeze_bobble_in_place(bobble) -> Vector2i:
 	var cell_indeces = get_nearest_empty_cell(bobble.global_position + Vector2(bubble_radius, bubble_radius));
+	
+	# For bobbles that lock to OOB, move them in bounds.
+	if cell_indeces[1] < 0:
+		cell_indeces = 0;
+	if cell_indeces[0] < 0:
+		cell_indeces[0] = 0;
+	if cell_indeces[1] > bubble_grid.size() - 1:
+		cell_indeces[1] = bubble_grid.size() - 1;
+	if cell_indeces[0] > bubble_grid[cell_indeces[1]].size() - 1:
+		cell_indeces[0] = bubble_grid[cell_indeces[1]].size() - 1;
+	
+	# For errant bobbles that want to occupy an already full location, destroy and report error. This  * shouldn't *  ever happen
+	if bubble_grid[cell_indeces[1]][cell_indeces[0]] != null:
+		bobble.queue_free();
+		print("INVALID LANDING POSITION: %s, %s" % [cell_indeces[1], cell_indeces[0]]);
+		return Vector2i(cell_indeces[1], cell_indeces[0]);
+	
 	bubble_grid[cell_indeces[1]][cell_indeces[0]] = lock_bobble_to_grid(bobble, cell_indeces);
 	bobble.queue_free();
 	return Vector2i(cell_indeces[1], cell_indeces[0]);
@@ -427,8 +448,10 @@ func lock_bobble_to_grid(bobble, indeces, replace_node = true) -> Node2D:
 		static_bobble.connect("popped", parent_level.on_bobble_popped);
 		static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
 		static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
-		static_bobble.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(0).scale;
-		static_bobble.get_child(0).get_child(1).scale = bobble.get_child(0).get_child(1).scale;
+		
+		const VISUAL_SCALE_INCREASE_FACTOR = 1.1;
+		static_bobble.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(0).scale * VISUAL_SCALE_INCREASE_FACTOR;
+		static_bobble.get_child(0).get_child(1).scale = bobble.get_child(0).get_child(1).scale * VISUAL_SCALE_INCREASE_FACTOR;
 		static_bobble.bobble_type = bobble.bobble_type;
 		static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
 	else:
@@ -560,3 +583,15 @@ func set_progress_to_next_row(percent):
 	
 	$Tray/ProgressBar/ProgressPolygonForeground.polygon = progress_circle_points;
 
+func init_exported_sprites():
+	if background_sprite != null:
+		var target_size = $BackgroundSprite.get_rect().size;
+		$BackgroundSprite.texture = background_sprite;
+		var real_size = background_sprite.get_size();
+		$BackgroundSprite.scale = Vector2(target_size[0] / real_size[0], target_size[1] / real_size[1]);
+
+	if tray_sprite != null:
+		var target_size = $Tray/TraySprite.get_rect();
+		$Tray/TraySprite.texture = tray_sprite;
+		var real_size = $Tray/TraySprite.get_rect();
+		$Tray/TraySprite.scale = Vector2(target_size[0] / real_size[0], target_size[1] / real_size[1]);

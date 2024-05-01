@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dyvy8680f6wue"]
 
 [ext_resource type="Script" path="res://script/bobble.gd" id="1_6gx4m"]
-[ext_resource type="Texture2D" uid="uid://df714gggegve5" path="res://asset/sample/img/bobble_1.png" id="2_nipbb"]
-[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/sample/img/food_1.png" id="3_06dvj"]
+[ext_resource type="Texture2D" uid="uid://df714gggegve5" path="res://asset/DEFAULT/img/bobble_1.png" id="2_fln6g"]
+[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/DEFAULT/img/food_1.png" id="3_hmr7n"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tefm1"]
 friction = 0.0
@@ -25,11 +25,11 @@ shape = SubResource("CircleShape2D_ln10o")
 
 [node name="Shell" type="Sprite2D" parent="CollisionShape"]
 scale = Vector2(0.04, 0.04)
-texture = ExtResource("2_nipbb")
+texture = ExtResource("2_fln6g")
 
 [node name="Food" type="Sprite2D" parent="CollisionShape"]
 position = Vector2(-2.38419e-07, -4.76837e-07)
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_06dvj")
+texture = ExtResource("3_hmr7n")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
