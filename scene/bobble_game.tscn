@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dp5aix43qjyis"]
+[gd_scene load_steps=16 format=3 uid="uid://dp5aix43qjyis"]
 
 [ext_resource type="Script" path="res://script/bobble_game.gd" id="1_mwlaa"]
 [ext_resource type="Texture2D" uid="uid://bvg2senjqtcph" path="res://asset/sample/img/sample_bg.png" id="2_fywnk"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/sample/img/sample_shoot_arrow.png" id="6_ljkhq"]
 [ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/sample/sound/shoot.ogg" id="7_oq1dj"]
 [ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble_prop.tscn" id="8_8itb7"]
-[ext_resource type="Texture2D" uid="uid://yju57n4auc83" path="res://asset/sample/img/sample_progress_bg.png" id="8_ll3oo"]
 [ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/sample/img/kill_line.png" id="10_bifpq"]
 [ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/sample/sound/pop.ogg" id="10_jv58l"]
 [ext_resource type="AudioStream" uid="uid://dxddqaw5saavi" path="res://asset/sample/sound/row_add.ogg" id="12_dcmtr"]
@@ -67,21 +66,19 @@ stream = ExtResource("7_oq1dj")
 
 [node name="ProgressBar" type="Node2D" parent="Tray"]
 
-[node name="ProgressBackground" type="Sprite2D" parent="Tray/ProgressBar"]
-visible = false
-position = Vector2(178.02, 293.935)
-scale = Vector2(0.765625, 0.765625)
-texture = ExtResource("8_ll3oo")
-
 [node name="ProgressPolygonBackground" type="Polygon2D" parent="Tray/ProgressBar"]
 position = Vector2(178.61, 292.95)
-scale = Vector2(1, 1)
 color = Color(1, 0.327064, 0.66794, 1)
 antialiased = true
 
 [node name="ProgressPolygonForeground" type="Polygon2D" parent="Tray/ProgressBar"]
 position = Vector2(178.61, 292.95)
+antialiased = true
+
+[node name="ProgressPolygonDisabledShader" type="Polygon2D" parent="Tray/ProgressBar"]
+position = Vector2(178.61, 292.95)
 scale = Vector2(1, 1)
+color = Color(0.113725, 0.113725, 0.113725, 0.870588)
 antialiased = true
 
 [node name="KillLineSprite" type="Sprite2D" parent="."]

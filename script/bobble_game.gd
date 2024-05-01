@@ -39,7 +39,9 @@ var row_height : float;
 var row_offset_count : int = 0;
 var next_bobble;
 var parent_level;
-var can_fire = true;
+var shot_cooldown_finished := true;
+
+var flying_bobble_count : int = 0;
 
 var help_lines = [];
 
@@ -74,12 +76,17 @@ func _ready():
 	lock_kill_line_to_grid();
 
 func _process(delta):
-	elapsed_seconds_for_new_row += delta;
-	if elapsed_seconds_for_new_row >= seconds_per_row:
+	
+	if not should_spawn_next_row():
+		elapsed_seconds_for_new_row += delta;
+	elif flying_bobble_count == 0:
 		elapsed_seconds_for_new_row -= seconds_per_row;
 		add_next_row();
 #
 	set_progress_to_next_row(elapsed_seconds_for_new_row / seconds_per_row)
+	
+	$Tray/ProgressBar/ProgressPolygonDisabledShader.visible = should_spawn_next_row() and flying_bobble_count > 0;
+	
 	
 	if Input.is_action_pressed("kill"):
 		get_tree().quit();
@@ -94,12 +101,12 @@ func _process(delta):
 		else:
 			get_viewport().mode = Window.MODE_MAXIMIZED;
 	
-	if not can_fire:
+	if not shot_cooldown_finished:
 		cur_seconds_after_shot += delta;
 	
 		if cur_seconds_after_shot >= SECONDS_BETWEEN_SHOTS:
 			cur_seconds_after_shot = 0;
-			can_fire = true;
+			shot_cooldown_finished = true;
 			set_next_bobble();
 			$Tray/Gun/BobbleProp.visible = true;
 	
@@ -123,12 +130,13 @@ func _process(delta):
 		try_rotate_left(delta, speed_multiplier);
 	if not override_right and Input.is_action_pressed("right"):
 		try_rotate_right(delta, speed_multiplier);
-	if Input.is_action_just_pressed("up") and can_fire:
+	if Input.is_action_just_pressed("up") and shot_cooldown_finished and not should_spawn_next_row():
 		fire_bobble();
 	
 	update_help_lines(delta);
 	
 	$Tray/Gun/GunBarrel.rotation = self.current_rotation;
+
 
 func _physics_process(_delta):
 	calculate_raycast_help_lines();
@@ -227,18 +235,28 @@ func set_next_bobble():
 
 
 func fire_bobble():
+	increment_flying_bobbles();
 	$Tray/Gun/ShootSound.play();
 	
 	next_bobble.scale_bobble(bubble_radius);
 	
 	add_child(next_bobble);
-	next_bobble.connect("impacted", handle_collision)
+	next_bobble.connect("impacted", handle_collision);
+	next_bobble.connect("impacted", decrement_flying_bobbles);
 	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
 	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
 
 	$Tray/Gun/BobbleProp.visible = false;
-	can_fire = false;
+	shot_cooldown_finished = false;
 
+func should_spawn_next_row() -> bool:
+	return elapsed_seconds_for_new_row >= seconds_per_row;
+
+func increment_flying_bobbles():
+	flying_bobble_count += 1;
+
+func decrement_flying_bobbles(_bobble):
+	flying_bobble_count -= 1;
 
 func try_rotate_left(delta, speed_multiplier = 1.0):
 	self.current_rotation = clampf(self.current_rotation - (delta * ROTATION_SPEED * speed_multiplier), -MAX_ROTATION_ABSOLUTE, MAX_ROTATION_ABSOLUTE);
@@ -513,6 +531,7 @@ func init_background_progress_bar_points():
 		points.append(Vector2(x_pos, y_pos));
 		
 	$Tray/ProgressBar/ProgressPolygonBackground.polygon = points;
+	$Tray/ProgressBar/ProgressPolygonDisabledShader.polygon = points;
 	
 func set_progress_to_next_row(percent):
 	# Makes the circle animation look smoother, as it completes the circle before resetting
