@@ -7,8 +7,8 @@
 [node name="Bobble" instance=ExtResource("1_imyao")]
 bobble_type = "hamburger"
 
-[node name="Shell" parent="CollisionShape" index="0"]
-texture = ExtResource("2_d82sq")
-
-[node name="Food" parent="CollisionShape" index="1"]
+[node name="Food" parent="CollisionShape" index="0"]
 texture = ExtResource("3_pp8k2")
+
+[node name="Shell" parent="CollisionShape" index="1"]
+texture = ExtResource("2_d82sq")

@@ -22,7 +22,7 @@ const KILL_LINE_PERCENTAGE : float = 0.85;
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
 
-var food_prop_blueprint = load("res://scene/food_prop.tscn");
+var food_prop_blueprint = preload("res://scene/food_prop.tscn");
 const FOOD_PROP_X_VELOCITY_RANGE := Vector2(-100, 100);
 const FOOD_PROP_Y_VELOCITY_RANGE := Vector2(-300, -500);
 
@@ -233,8 +233,9 @@ func init_grid():
 func set_next_bobble():
 	next_bobble = bobble_set.pick_random().instantiate();
 	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble);
-	$Tray/Gun/BobbleProp.get_child(0).get_child(0).scale = next_bobble.get_child(0).get_child(0).scale;
-	$Tray/Gun/BobbleProp.get_child(0).get_child(1).scale = next_bobble.get_child(0).get_child(1).scale;
+
+	$Tray/Gun/BobbleProp.set_food_scale(next_bobble.get_food_scale());
+	$Tray/Gun/BobbleProp.set_shell_scale(next_bobble.get_shell_scale());
 
 
 func fire_bobble():
@@ -387,7 +388,7 @@ func destroy_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 func spawn_props(bobble):
 	var prop = food_prop_blueprint.instantiate();
 	prop.scale_bobble(bubble_radius);
-	prop.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(1).scale;
+	prop.set_food_scale(bobble.get_food_scale());
 	prop.copy_bobble_textures(bobble);
 	add_child(prop);
 	var impulse_vector = Vector2(randf_range(FOOD_PROP_X_VELOCITY_RANGE[0], FOOD_PROP_X_VELOCITY_RANGE[1]), randf_range(FOOD_PROP_Y_VELOCITY_RANGE[0], FOOD_PROP_Y_VELOCITY_RANGE[1]));
@@ -446,12 +447,15 @@ func lock_bobble_to_grid(bobble, indeces, replace_node = true) -> Node2D:
 		call_deferred("add_child", static_bobble);
 		static_bobble.connect("added_to_tree", static_bobble.scale_bobble)
 		static_bobble.connect("popped", parent_level.on_bobble_popped);
-		static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
-		static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
 		
+		static_bobble.set_food_texture(bobble.get_food_texture());
+		static_bobble.set_shell_texture(bobble.get_shell_texture());
+
+
 		const VISUAL_SCALE_INCREASE_FACTOR = 1.1;
-		static_bobble.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(0).scale * VISUAL_SCALE_INCREASE_FACTOR;
-		static_bobble.get_child(0).get_child(1).scale = bobble.get_child(0).get_child(1).scale * VISUAL_SCALE_INCREASE_FACTOR;
+		static_bobble.set_food_scale(VISUAL_SCALE_INCREASE_FACTOR * bobble.get_food_scale());
+		static_bobble.set_shell_scale(VISUAL_SCALE_INCREASE_FACTOR * bobble.get_shell_scale());
+
 		static_bobble.bobble_type = bobble.bobble_type;
 		static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
 	else:

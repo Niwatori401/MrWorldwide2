@@ -19,11 +19,11 @@ script = ExtResource("1_ahm5w")
 shape = SubResource("CircleShape2D_ln10o")
 debug_color = Color(0.87451, 0, 0.835294, 0.419608)
 
-[node name="Shell" type="Sprite2D" parent="CollisionShape"]
-scale = Vector2(0.04, 0.04)
-texture = SubResource("CompressedTexture2D_tlofj")
-
 [node name="Food" type="Sprite2D" parent="CollisionShape"]
 position = Vector2(-2.38419e-07, -4.76837e-07)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_5b3i6")
+
+[node name="Shell" type="Sprite2D" parent="CollisionShape"]
+scale = Vector2(0.04, 0.04)
+texture = SubResource("CompressedTexture2D_tlofj")

@@ -18,3 +18,28 @@ func scale_bobble():
 func pop():
 	emit_signal("popped");
 	queue_free();
+
+
+func get_food_texture() -> Texture2D:
+	return $CollisionShape/Food.texture;
+	
+func set_food_texture(texture : Texture2D) -> void:
+	$CollisionShape/Food.texture = texture;
+	
+func get_shell_texture() -> Texture2D:
+	return $CollisionShape/Shell.texture;
+	
+func set_shell_texture(texture : Texture2D) -> void:
+	$CollisionShape/Shell.texture = texture;
+	
+func get_food_scale() -> Vector2:
+	return $CollisionShape/Food.scale;
+
+func set_food_scale(new_scale : Vector2) -> void:
+	$CollisionShape/Food.scale = new_scale;
+	
+func get_shell_scale() -> Vector2:
+	return $CollisionShape/Shell.scale;
+	
+func set_shell_scale(new_scale : Vector2) -> void:
+	$CollisionShape/Shell.scale = new_scale;

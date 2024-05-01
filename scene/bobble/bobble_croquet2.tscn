@@ -7,10 +7,10 @@
 [node name="Bobble" instance=ExtResource("1_1r1k2")]
 bobble_type = "croquet2"
 
-[node name="Shell" parent="CollisionShape" index="0"]
-texture = ExtResource("2_v3wcn")
-
-[node name="Food" parent="CollisionShape" index="1"]
+[node name="Food" parent="CollisionShape" index="0"]
 position = Vector2(1, -1.49012e-08)
 scale = Vector2(0.0844169, 0.0798905)
 texture = ExtResource("3_ybvic")
+
+[node name="Shell" parent="CollisionShape" index="1"]
+texture = ExtResource("2_v3wcn")

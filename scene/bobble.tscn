@@ -23,13 +23,13 @@ script = ExtResource("1_6gx4m")
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ln10o")
 
-[node name="Shell" type="Sprite2D" parent="CollisionShape"]
-scale = Vector2(0.04, 0.04)
-texture = ExtResource("2_fln6g")
-
 [node name="Food" type="Sprite2D" parent="CollisionShape"]
 position = Vector2(-2.38419e-07, -4.76837e-07)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_hmr7n")
+
+[node name="Shell" type="Sprite2D" parent="CollisionShape"]
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("2_fln6g")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
