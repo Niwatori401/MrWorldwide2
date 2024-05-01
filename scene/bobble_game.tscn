@@ -66,14 +66,23 @@ stream = ExtResource("7_oq1dj")
 [node name="BobbleProp" parent="Tray/Gun" instance=ExtResource("8_8itb7")]
 
 [node name="ProgressBar" type="Node2D" parent="Tray"]
-visible = false
 
 [node name="ProgressBackground" type="Sprite2D" parent="Tray/ProgressBar"]
-position = Vector2(177, 281)
+visible = false
+position = Vector2(178.02, 293.935)
 scale = Vector2(0.765625, 0.765625)
 texture = ExtResource("8_ll3oo")
 
-[node name="ProgressSprite" type="Sprite2D" parent="Tray/ProgressBar"]
+[node name="ProgressPolygonBackground" type="Polygon2D" parent="Tray/ProgressBar"]
+position = Vector2(178.61, 292.95)
+scale = Vector2(1, 1)
+color = Color(1, 0.327064, 0.66794, 1)
+antialiased = true
+
+[node name="ProgressPolygonForeground" type="Polygon2D" parent="Tray/ProgressBar"]
+position = Vector2(178.61, 292.95)
+scale = Vector2(1, 1)
+antialiased = true
 
 [node name="KillLineSprite" type="Sprite2D" parent="."]
 position = Vector2(0.0974121, -35.9351)

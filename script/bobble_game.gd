@@ -45,6 +45,17 @@ var help_lines = [];
 
 var bubble_grid : Array[Array];
 
+var progress_circle_points := PackedVector2Array();
+const ANGLE_PER_POINT_RAD : float = deg_to_rad(2);
+const PROGRESS_CIRCLE_RADIUS : float = 30;
+const CIRCLE_ANGLE_OFFSET : float = deg_to_rad(270);
+@export var seconds_per_row : float = 9;
+@export var time_decrease_per_row : float = 0.2;
+@export var min_seconds_per_row : float = 5;
+var elapsed_seconds_for_new_row : float = 0;
+
+
+
 # These are used to prevent pressing left and right cancelling each other out for input.
 var override_left := false;
 var override_right := false;
@@ -53,7 +64,7 @@ func _ready():
 	# level.tscn
 	parent_level = get_parent();
 	connect("game_over", parent_level.game_over)
-	
+	init_background_progress_bar_points();
 	bubble_radius = ($BackgroundSprite.get_rect().size[0] * $BackgroundSprite.global_scale[0]) / (2 * cell_count_horizontal);
 	row_height = sqrt(3) * bubble_radius;
 	add_hitboxes_for_help_lines();
@@ -63,6 +74,13 @@ func _ready():
 	lock_kill_line_to_grid();
 
 func _process(delta):
+	elapsed_seconds_for_new_row += delta;
+	if elapsed_seconds_for_new_row >= seconds_per_row:
+		elapsed_seconds_for_new_row -= seconds_per_row;
+		add_next_row();
+#
+	set_progress_to_next_row(elapsed_seconds_for_new_row / seconds_per_row)
+	
 	if Input.is_action_pressed("kill"):
 		get_tree().quit();
 	
@@ -164,7 +182,6 @@ func add_hitboxes_for_help_lines():
 func add_next_row():
 	row_offset_count += 1;
 	
-	
 	for row in range(bubble_grid.size()):
 		for col in range(bubble_grid[row].size()):
 			if bubble_grid[row][col] == null:
@@ -172,12 +189,12 @@ func add_next_row():
 				
 			lock_bobble_to_grid(bubble_grid[row][col], Vector2i(col, row + 1), false); 
 	
-	
 	var new_row = [];
 	
 	for i in range(cell_count_horizontal - 1 if is_small_row(0) else cell_count_horizontal):
 		new_row.append(lock_bobble_to_grid(bobble_set.pick_random().instantiate(), Vector2i(i, 0)));
-		
+	
+	$SFX/NewRowSound.play();
 	bubble_grid.insert(0, new_row);
 
 func init_grid():
@@ -198,7 +215,6 @@ func init_grid():
 	$Timers/AddRowTimer.start();
 	for i in range(initial_rows_count):
 		await $Timers/AddRowTimer.timeout;
-		$SFX/NewRowSound.play();
 		add_next_row();
 	$Timers/AddRowTimer.stop();
 
@@ -481,4 +497,43 @@ func should_fail():
 
 func is_small_row(row_number):
 	return (row_number + row_offset_count) % 2 == 1;
+
+
+func init_background_progress_bar_points():
+	var points = PackedVector2Array();
+	points.append(Vector2(0,0));
+	for i in range(floor((1.02 * 2 * PI) / ANGLE_PER_POINT_RAD)):
+		var angle = i * ANGLE_PER_POINT_RAD;
+		var x_pos = cos(angle + CIRCLE_ANGLE_OFFSET) * PROGRESS_CIRCLE_RADIUS;
+		var y_pos = sin(angle + CIRCLE_ANGLE_OFFSET) * PROGRESS_CIRCLE_RADIUS;	
+		points.append(Vector2(x_pos, y_pos));
+		
+	$Tray/ProgressBar/ProgressPolygonBackground.polygon = points;
+	
+func set_progress_to_next_row(percent):
+	# Makes the circle animation look smoother, as it completes the circle before resetting
+	percent += 0.02;
+	
+	var point_count = floor((percent * 2 * PI) / ANGLE_PER_POINT_RAD);
+	
+	if progress_circle_points.size() - 1 > point_count:
+		var old_color = $Tray/ProgressBar/ProgressPolygonForeground.color;
+		$Tray/ProgressBar/ProgressPolygonForeground.color = $Tray/ProgressBar/ProgressPolygonBackground.color;
+		$Tray/ProgressBar/ProgressPolygonBackground.color = old_color;
+		progress_circle_points.clear();
+		percent = 0;
+	
+	if progress_circle_points.size() == 0:
+		progress_circle_points.append(Vector2(0,0));
+	
+	# Subtract one to account for center point
+	var current_point_count = progress_circle_points.size() - 1;
+	
+	for i in range(point_count - current_point_count):
+		var angle = (current_point_count + i) * ANGLE_PER_POINT_RAD;
+		var x_pos = cos(angle + CIRCLE_ANGLE_OFFSET) * PROGRESS_CIRCLE_RADIUS;
+		var y_pos = sin(angle + CIRCLE_ANGLE_OFFSET) * PROGRESS_CIRCLE_RADIUS;	
+		progress_circle_points.append(Vector2(x_pos, y_pos));
+	
+	$Tray/ProgressBar/ProgressPolygonForeground.polygon = progress_circle_points;
 
