@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bqmxgs4s7mci"]
+[gd_scene load_steps=49 format=3 uid="uid://bqmxgs4s7mci"]
 
 [ext_resource type="Script" path="res://script/level.gd" id="1_kph0n"]
 [ext_resource type="AudioStream" uid="uid://c6yrqb1nevnna" path="res://asset/sample/sound/song_1.ogg" id="2_ebkqq"]
@@ -6,22 +6,26 @@
 [ext_resource type="Texture2D" uid="uid://crp8x57ho8lkn" path="res://asset/level/japan/img/stage_bg.png" id="2_vt70i"]
 [ext_resource type="AudioStream" uid="uid://wikn1gn1mlyl" path="res://asset/sample/sound/song_2.ogg" id="3_5gvfr"]
 [ext_resource type="AudioStream" uid="uid://dchgswqetw7nu" path="res://asset/sample/sound/song_3.ogg" id="4_dvxtk"]
-[ext_resource type="PackedScene" uid="uid://c36v4g3kn187f" path="res://scene/bobble/bobble1.tscn" id="4_ktllo"]
 [ext_resource type="AudioStream" uid="uid://c2dd2rr0tneic" path="res://asset/sample/sound/song_4.ogg" id="5_bmg7x"]
-[ext_resource type="PackedScene" uid="uid://bife845efq5h1" path="res://scene/bobble/bobble2.tscn" id="5_nvfkk"]
-[ext_resource type="PackedScene" uid="uid://ctmn4uhrl08v0" path="res://scene/bobble/bobble3.tscn" id="6_a1gks"]
 [ext_resource type="AudioStream" uid="uid://djwdb3t8wnd4i" path="res://asset/sample/sound/song_5.ogg" id="6_rqipa"]
 [ext_resource type="AudioStream" uid="uid://c63wj6akojtti" path="res://asset/sample/sound/song_6.ogg" id="7_3wv1j"]
 [ext_resource type="Texture2D" uid="uid://ca7rvhp6y41ws" path="res://asset/level/japan/img/dot/output_000.png" id="7_ckbjk"]
 [ext_resource type="Texture2D" uid="uid://dccylv3xjkgpu" path="res://asset/level/japan/img/dot/output_002.png" id="8_4ic4f"]
 [ext_resource type="Texture2D" uid="uid://3hid5p66tigv" path="res://asset/level/japan/img/dot/output_004.png" id="9_sir74"]
+[ext_resource type="Script" path="res://script/bobble.gd" id="10_0v0pm"]
 [ext_resource type="Texture2D" uid="uid://bm8p4gh28f513" path="res://asset/level/japan/img/dot/output_006.png" id="10_4by1t"]
+[ext_resource type="Texture2D" uid="uid://df714gggegve5" path="res://asset/sample/img/bobble_1.png" id="11_sqk3o"]
 [ext_resource type="Texture2D" uid="uid://cc0p7fsrjvayg" path="res://asset/level/japan/img/dot/output_008.png" id="11_wnawi"]
+[ext_resource type="Texture2D" uid="uid://c0yfssr12nee4" path="res://asset/sample/img/food_1.png" id="12_hbe3q"]
 [ext_resource type="Texture2D" uid="uid://b1lu8ebn8cbfr" path="res://asset/level/japan/img/dot/output_010.png" id="12_qlhu0"]
 [ext_resource type="Texture2D" uid="uid://cotdyun4ojhr8" path="res://asset/level/japan/img/dot/output_012.png" id="13_i5lep"]
+[ext_resource type="Texture2D" uid="uid://d4gb6438nhaqe" path="res://asset/sample/img/bobble_2.png" id="13_lt60x"]
+[ext_resource type="Texture2D" uid="uid://duskhdng7cfwj" path="res://asset/sample/img/food_2.png" id="14_b84vj"]
 [ext_resource type="Texture2D" uid="uid://bx1kl0u3nycvv" path="res://asset/level/japan/img/dot/output_014.png" id="14_ufd5v"]
+[ext_resource type="Texture2D" uid="uid://cgc7r035amosv" path="res://asset/sample/img/bobble_3.png" id="15_4cyyv"]
 [ext_resource type="Texture2D" uid="uid://bm8bd27k8qmq5" path="res://asset/level/japan/img/dot/output_016.png" id="15_pfv73"]
 [ext_resource type="Texture2D" uid="uid://dl2jpwbll7xp5" path="res://asset/level/japan/img/dot/output_018.png" id="16_5hc1f"]
+[ext_resource type="Texture2D" uid="uid://dsiktnmilf7ku" path="res://asset/sample/img/food_3.png" id="16_ax2h4"]
 [ext_resource type="Texture2D" uid="uid://dvebpuncm0vxi" path="res://asset/level/japan/img/dot/output_020.png" id="17_mstah"]
 [ext_resource type="Texture2D" uid="uid://3o460rpohcat" path="res://asset/level/japan/img/dot/output_022.png" id="18_rmesm"]
 [ext_resource type="Texture2D" uid="uid://cdpjc8kmoek1i" path="res://asset/level/japan/img/dot/output_024.png" id="19_cmelx"]
@@ -36,26 +40,84 @@
 [ext_resource type="Texture2D" uid="uid://c43mjvw1y5mc8" path="res://asset/sample/img/character/370.png" id="28_7wddf"]
 [ext_resource type="Texture2D" uid="uid://c6cm3rk7a6o6l" path="res://asset/sample/img/character/600.png" id="29_jramr"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tefm1"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ln10o"]
+radius = 23.0
+
+[sub_resource type="PackedScene" id="PackedScene_r5svo"]
+_bundled = {
+"conn_count": 1,
+"conns": PackedInt32Array(1073741828, 1073741827, 25, 24, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("Bobble", "RigidBody2D", "ballstop", "collision_layer", "physics_material_override", "gravity_scale", "continuous_cd", "max_contacts_reported", "contact_monitor", "script", "bobble_type", "CollisionShape", "CollisionShape2D", "shape", "debug_color", "Shell", "Sprite2D", "scale", "texture", "Food", "Sprite2D", "position", "scale", "texture", "_on_body_entered", "body_entered"),
+"node_count": 4,
+"node_paths": [NodePath("."), NodePath("./CollisionShape"), NodePath("./CollisionShape"), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 8, 3, 0, 4, 1, 5, 2, 6, 3, 7, 4, 8, 5, 9, 6, 10, 7, 1, 2, 1073741824, 0, 12, 11, -1, 2, 13, 8, 14, 9, 0, 1073741825, 0, 16, 15, -1, 2, 17, 10, 18, 11, 0, 1073741826, 0, 20, 19, -1, 3, 21, 12, 22, 13, 23, 14, 0),
+"variants": [0, SubResource("PhysicsMaterial_tefm1"), 0.0, 2, 5, true, ExtResource("10_0v0pm"), 1, SubResource("CircleShape2D_ln10o"), Color(0.992157, 0, 0.282353, 0.419608), Vector2(0.04, 0.04), ExtResource("11_sqk3o"), Vector2(-2.38419e-07, -4.76837e-07), Vector2(0.3, 0.3), ExtResource("12_hbe3q")],
+"version": 3
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ftn1y"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3euo8"]
+radius = 23.0
+
+[sub_resource type="PackedScene" id="PackedScene_m0shg"]
+_bundled = {
+"conn_count": 1,
+"conns": PackedInt32Array(1073741828, 1073741827, 24, 23, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("Bobble", "RigidBody2D", "ballstop", "collision_layer", "physics_material_override", "gravity_scale", "continuous_cd", "max_contacts_reported", "contact_monitor", "script", "bobble_type", "CollisionShape", "CollisionShape2D", "shape", "Shell", "Sprite2D", "scale", "texture", "Food", "Sprite2D", "position", "scale", "texture", "_on_body_entered", "body_entered"),
+"node_count": 4,
+"node_paths": [NodePath("."), NodePath("./CollisionShape"), NodePath("./CollisionShape"), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 8, 3, 0, 4, 1, 5, 2, 6, 3, 7, 4, 8, 5, 9, 6, 10, 7, 1, 2, 1073741824, 0, 12, 11, -1, 1, 13, 8, 0, 1073741825, 0, 15, 14, -1, 2, 16, 9, 17, 10, 0, 1073741826, 0, 19, 18, -1, 3, 20, 11, 21, 12, 22, 13, 0),
+"variants": [0, SubResource("PhysicsMaterial_ftn1y"), 0.0, 2, 5, true, ExtResource("10_0v0pm"), 2, SubResource("CircleShape2D_3euo8"), Vector2(0.04, 0.04), ExtResource("13_lt60x"), Vector2(-2.38419e-07, -4.76837e-07), Vector2(0.3, 0.3), ExtResource("14_b84vj")],
+"version": 3
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_x0pm2"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oaci8"]
+radius = 23.0
+
+[sub_resource type="PackedScene" id="PackedScene_avut8"]
+_bundled = {
+"conn_count": 1,
+"conns": PackedInt32Array(1073741828, 1073741827, 24, 23, 2, 0, 0),
+"editable_instances": [],
+"names": PackedStringArray("Bobble", "RigidBody2D", "ballstop", "collision_layer", "physics_material_override", "gravity_scale", "continuous_cd", "max_contacts_reported", "contact_monitor", "script", "bobble_type", "CollisionShape", "CollisionShape2D", "shape", "Shell", "Sprite2D", "scale", "texture", "Food", "Sprite2D", "position", "scale", "texture", "_on_body_entered", "body_entered"),
+"node_count": 4,
+"node_paths": [NodePath("."), NodePath("./CollisionShape"), NodePath("./CollisionShape"), NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 8, 3, 0, 4, 1, 5, 2, 6, 3, 7, 4, 8, 5, 9, 6, 10, 7, 1, 2, 1073741824, 0, 12, 11, -1, 1, 13, 8, 0, 1073741825, 0, 15, 14, -1, 2, 16, 9, 17, 10, 0, 1073741826, 0, 19, 18, -1, 3, 20, 11, 21, 12, 22, 13, 0),
+"variants": [0, SubResource("PhysicsMaterial_x0pm2"), 0.0, 2, 5, true, ExtResource("10_0v0pm"), 3, SubResource("CircleShape2D_oaci8"), Vector2(0.04, 0.04), ExtResource("15_4cyyv"), Vector2(-2.38419e-07, -4.76837e-07), Vector2(0.3, 0.3), ExtResource("16_ax2h4")],
+"version": 3
+}
+
 [node name="Level" type="Node2D"]
 script = ExtResource("1_kph0n")
 background_image = ExtResource("2_vt70i")
 music_stages = Array[AudioStream]([ExtResource("2_ebkqq"), ExtResource("3_5gvfr"), ExtResource("4_dvxtk"), ExtResource("5_bmg7x"), ExtResource("6_rqipa"), ExtResource("7_3wv1j")])
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(960.623, 548.027)
-scale = Vector2(0.855447, 0.730631)
 
 [node name="BobbleGame" parent="." instance=ExtResource("2_tmsy2")]
 position = Vector2(1521, 541)
 scale = Vector2(1.39, 1.39)
-bobble_set = Array[PackedScene]([ExtResource("4_ktllo"), ExtResource("5_nvfkk"), ExtResource("6_a1gks")])
+bobble_set = Array[PackedScene]([SubResource("PackedScene_r5svo"), SubResource("PackedScene_m0shg"), SubResource("PackedScene_avut8")])
 SECONDS_BETWEEN_SHOTS = 0.2
 dot_textures = Array[Texture2D]([ExtResource("7_ckbjk"), ExtResource("8_4ic4f"), ExtResource("9_sir74"), ExtResource("10_4by1t"), ExtResource("11_wnawi"), ExtResource("12_qlhu0"), ExtResource("13_i5lep"), ExtResource("14_ufd5v"), ExtResource("15_pfv73"), ExtResource("16_5hc1f"), ExtResource("17_mstah"), ExtResource("18_rmesm"), ExtResource("19_cmelx"), ExtResource("20_xxlcr"), ExtResource("21_sf5ri"), ExtResource("22_x1etq")])
 
 [node name="PauseIcon" type="Sprite2D" parent="."]
 
 [node name="Character" parent="." instance=ExtResource("23_oolr0")]
-point_thresholds = Array[int]([100, 140, 180, 260, 370, 600])
+point_thresholds = Array[int]([100, 140, 180, 260, 370])
 character_sprites = Array[Texture2D]([ExtResource("24_0lg25"), ExtResource("25_weamh"), ExtResource("26_hcetr"), ExtResource("27_tm8g0"), ExtResource("28_7wddf"), ExtResource("29_jramr")])
 
 [node name="ScoreLabel" type="RichTextLabel" parent="."]

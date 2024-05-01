@@ -2,7 +2,7 @@ extends RigidBody2D
 
 signal impacted(bobble)
 
-@export var bobble_type : int;
+@export var bobble_type : String;
 
 var already_impacted = false;
 

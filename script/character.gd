@@ -6,10 +6,10 @@ extends Node2D
 @export var character_sprites : Array[Texture2D];
 
 func _ready():
-	assert(point_thresholds.size() == character_sprites.size());
+	assert(point_thresholds.size() + 1 == character_sprites.size());
 	
 	# Assign Textures to Sprite Frames
-	for i in range(point_thresholds.size()):
+	for i in range(character_sprites.size()):
 		$Sprite.sprite_frames.add_animation("%s" % [i]);
 		$Sprite.sprite_frames.add_frame("%s" % [i], character_sprites[i]);
 
@@ -36,14 +36,14 @@ func set_sprite_stage_by_points(points):
 	return;
 
 func get_stage_count() -> int:
-	return point_thresholds.size();
+	return character_sprites.size();
 
 func get_stage_index(score) -> int:
 	for index in range(point_thresholds.size()):
 		if score < point_thresholds[index]:
 			return index;
 	
-	return point_thresholds.size() - 1;
+	return point_thresholds.size();
 
 func get_next_stage_threshold(cur_points) -> String:
 	for value in point_thresholds:

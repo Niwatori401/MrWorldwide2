@@ -2,7 +2,7 @@ extends StaticBody2D
 signal added_to_tree;
 signal popped;
 
-var bobble_type : int;
+var bobble_type : String;
 var pixel_radius : float;
 
 func _enter_tree():

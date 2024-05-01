@@ -5,7 +5,7 @@ signal impacted(bobble)
 const FOOD_SCALE_MULTIPLIER = 0.3;
 const SHELL_SCALE_MULTIPLIER = 0.04;
 
-@export var bobble_type : int;
+@export var bobble_type : String;
 
 func scale_bobble(pixel_radius):
 	var original_size = $CollisionShape/Shell.global_scale * $CollisionShape/Shell.get_rect().size;

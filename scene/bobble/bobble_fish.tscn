@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://busdp4s14ut6d"]
+
+[ext_resource type="PackedScene" uid="uid://dyvy8680f6wue" path="res://scene/bobble.tscn" id="1_ptd5j"]
+[ext_resource type="Texture2D" uid="uid://chkeb8ybxspyt" path="res://asset/level/japan/img/bobble/bobble_5.png" id="2_os8td"]
+[ext_resource type="Texture2D" uid="uid://ctsvy7ofpo3dv" path="res://asset/level/japan/img/bobble/food_5.png" id="3_evhj5"]
+
+[node name="Bobble" instance=ExtResource("1_ptd5j")]
+bobble_type = "fish"
+
+[node name="Shell" parent="CollisionShape" index="0"]
+texture = ExtResource("2_os8td")
+
+[node name="Food" parent="CollisionShape" index="1"]
+position = Vector2(0, 0)
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("3_evhj5")

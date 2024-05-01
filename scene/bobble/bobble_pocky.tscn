@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwuby3xbkhcqu"]
+
+[ext_resource type="PackedScene" uid="uid://dyvy8680f6wue" path="res://scene/bobble.tscn" id="1_fuel1"]
+[ext_resource type="Texture2D" uid="uid://bt7e2rwt74kp7" path="res://asset/level/japan/img/bobble/bobble_2.png" id="2_peqmj"]
+[ext_resource type="Texture2D" uid="uid://dxrn6jrincb31" path="res://asset/level/japan/img/bobble/food_2.png" id="3_kaanb"]
+
+[node name="Bobble" instance=ExtResource("1_fuel1")]
+bobble_type = "pocky"
+
+[node name="Shell" parent="CollisionShape" index="0"]
+texture = ExtResource("2_peqmj")
+
+[node name="Food" parent="CollisionShape" index="1"]
+texture = ExtResource("3_kaanb")

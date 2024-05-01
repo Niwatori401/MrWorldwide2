@@ -221,8 +221,9 @@ func init_grid():
 
 func set_next_bobble():
 	next_bobble = bobble_set.pick_random().instantiate();
-	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble)
-
+	$Tray/Gun/BobbleProp.copy_bobble_textures(next_bobble);
+	$Tray/Gun/BobbleProp.get_child(0).get_child(0).scale = next_bobble.get_child(0).get_child(0).scale;
+	$Tray/Gun/BobbleProp.get_child(0).get_child(1).scale = next_bobble.get_child(0).get_child(1).scale;
 
 
 func fire_bobble():
@@ -292,7 +293,7 @@ func dfs_for_floating_bobbles(grid : Array[Array], row : int, col : int):
 		
 		dfs_for_floating_bobbles(grid, new_row, new_col);	
 
-func dfs_for_elligible_bobbles(grid : Array[Array], row : int, col : int, cur_type : int, cur_list : Array[Vector2]):
+func dfs_for_elligible_bobbles(grid : Array[Array], row : int, col : int, cur_type : String, cur_list : Array[Vector2]):
 	if grid[row][col] == null:
 		return;
 	
@@ -364,6 +365,7 @@ func destroy_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 func spawn_props(bobble):
 	var prop = food_prop_blueprint.instantiate();
 	prop.scale_bobble(bubble_radius);
+	prop.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(1).scale;
 	prop.copy_bobble_textures(bobble);
 	add_child(prop);
 	var impulse_vector = Vector2(randf_range(FOOD_PROP_X_VELOCITY_RANGE[0], FOOD_PROP_X_VELOCITY_RANGE[1]), randf_range(FOOD_PROP_Y_VELOCITY_RANGE[0], FOOD_PROP_Y_VELOCITY_RANGE[1]));
@@ -407,6 +409,8 @@ func lock_bobble_to_grid(bobble, indeces, replace_node = true) -> Node2D:
 		static_bobble.connect("popped", parent_level.on_bobble_popped);
 		static_bobble.get_child(0).get_child(0).texture = bobble.get_child(0).get_child(0).texture;
 		static_bobble.get_child(0).get_child(1).texture = bobble.get_child(0).get_child(1).texture;
+		static_bobble.get_child(0).get_child(0).scale = bobble.get_child(0).get_child(0).scale;
+		static_bobble.get_child(0).get_child(1).scale = bobble.get_child(0).get_child(1).scale;
 		static_bobble.bobble_type = bobble.bobble_type;
 		static_bobble.global_position = to_local(Vector2(x_pos, y_pos));
 	else:

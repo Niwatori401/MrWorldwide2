@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="MrWorldwide2"
-run/main_scene="res://scene/level/level.tscn"
+config/name="MissWorldwide"
+run/main_scene="res://scene/level/japan/level_japan.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
