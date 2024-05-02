@@ -1,0 +1,39 @@
+[gd_scene load_steps=21 format=3 uid="uid://r47mg7jd2dw7"]
+
+[ext_resource type="PackedScene" uid="uid://bqmxgs4s7mci" path="res://scene/level/level.tscn" id="1_f3fgc"]
+[ext_resource type="Texture2D" uid="uid://v64fd2xp02iv" path="res://asset/level/newdelhi/img/stage_bg.png" id="2_edj00"]
+[ext_resource type="AudioStream" uid="uid://d3qgix4ugv4mq" path="res://asset/level/newdelhi/audio/delhi_1.ogg" id="3_11ody"]
+[ext_resource type="AudioStream" uid="uid://bfu2uh6y10h3d" path="res://asset/level/newdelhi/audio/delhi_2.ogg" id="4_t1bcb"]
+[ext_resource type="AudioStream" uid="uid://buj42bqrn5267" path="res://asset/level/newdelhi/audio/delhi_3.ogg" id="5_4ye4f"]
+[ext_resource type="AudioStream" uid="uid://bg5xcqrxacrq7" path="res://asset/level/newdelhi/audio/delhi_4.ogg" id="6_gk05k"]
+[ext_resource type="AudioStream" uid="uid://bo3lsmdmsblb0" path="res://asset/level/newdelhi/audio/delhi_5.ogg" id="7_v8nnp"]
+[ext_resource type="AudioStream" uid="uid://dr67ns5h4o1y8" path="res://asset/level/newdelhi/audio/delhi_6.ogg" id="8_h64r5"]
+[ext_resource type="Texture2D" uid="uid://dhh6t3bjqxs7v" path="res://asset/level/newdelhi/img/game_bg.png" id="9_7eqay"]
+[ext_resource type="Texture2D" uid="uid://cew6y7qlr7y17" path="res://asset/level/newdelhi/img/character/100.png" id="9_okwa1"]
+[ext_resource type="PackedScene" uid="uid://dk6i0qlnbbbvn" path="res://scene/bobble/instance/bobble_india1.tscn" id="9_uvo1e"]
+[ext_resource type="PackedScene" uid="uid://ch3leip0pi7i4" path="res://scene/bobble/instance/bobble_india2.tscn" id="10_2355l"]
+[ext_resource type="Texture2D" uid="uid://wepwd1mq72c7" path="res://asset/level/newdelhi/img/character/150.png" id="10_q6hdj"]
+[ext_resource type="Texture2D" uid="uid://bwgjykcftt7sm" path="res://asset/level/newdelhi/img/character/200.png" id="11_8q27g"]
+[ext_resource type="PackedScene" uid="uid://bok10s8x6jdpa" path="res://scene/bobble/instance/bobble_india3.tscn" id="11_s583q"]
+[ext_resource type="Texture2D" uid="uid://n8xvqfhkv8j5" path="res://asset/level/newdelhi/img/character/300.png" id="12_43uh5"]
+[ext_resource type="PackedScene" uid="uid://5xrwu8x108ug" path="res://scene/bobble/instance/bobble_india4.tscn" id="12_a5i6p"]
+[ext_resource type="PackedScene" uid="uid://cxc4bcyrp0tf8" path="res://scene/bobble/instance/bobble_india5.tscn" id="13_crtwp"]
+[ext_resource type="Texture2D" uid="uid://cix067sb5rvl1" path="res://asset/level/newdelhi/img/character/450.png" id="13_wt0fl"]
+[ext_resource type="Texture2D" uid="uid://q11n73h0lhub" path="res://asset/level/newdelhi/img/character/650.png" id="14_02dcm"]
+
+[node name="Level" instance=ExtResource("1_f3fgc")]
+background_image = ExtResource("2_edj00")
+music_stages = Array[AudioStream]([ExtResource("3_11ody"), ExtResource("4_t1bcb"), ExtResource("5_4ye4f"), ExtResource("6_gk05k"), ExtResource("7_v8nnp"), ExtResource("8_h64r5")])
+
+[node name="BobbleGame" parent="." index="1"]
+cell_count_horizontal = 8
+kill_line_percentage = 0.8
+seconds_between_shots = 0.2
+seconds_per_row = 14.0
+min_seconds_per_row = 10.0
+background_sprite = ExtResource("9_7eqay")
+bobble_set = Array[PackedScene]([ExtResource("9_uvo1e"), ExtResource("10_2355l"), ExtResource("11_s583q"), ExtResource("12_a5i6p"), ExtResource("13_crtwp")])
+
+[node name="Character" parent="." index="3"]
+point_thresholds = Array[int]([100, 150, 200, 300, 450])
+character_sprites = Array[Texture2D]([ExtResource("9_okwa1"), ExtResource("10_q6hdj"), ExtResource("11_8q27g"), ExtResource("12_43uh5"), ExtResource("13_wt0fl"), ExtResource("14_02dcm")])

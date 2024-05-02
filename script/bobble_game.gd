@@ -2,63 +2,55 @@ extends Node2D
 
 signal game_over;
 
-@export var background_sprite : Texture2D;
-@export var tray_sprite : Texture2D;
-
-@export var bobble_set : Array[PackedScene];
-@export var SECONDS_BETWEEN_SHOTS : float = 1.0;
+@export_group("Gameplay")
+@export var cell_count_horizontal := 7;
+@export var kill_line_percentage : float = 0.85;
+@export var seconds_between_shots : float = 1.0;
 @export var initial_rows_count : int = 4;
+@export var seconds_per_row : float = 9;
+@export var time_decrease_per_row : float = 0.2;
+@export var min_seconds_per_row : float = 5;
+@export var launch_speed_magnitude : float = 900;
+
+@export_group("Assets")
+@export var background_sprite : Texture2D;
+var tray_sprite : Texture2D;
+@export var bobble_set : Array[PackedScene];
+@export var dot_textures : Array[Texture2D];
+
 var cur_seconds_after_shot : float = 0;
 
 const MAX_ROTATION_ABSOLUTE : float = deg_to_rad(80);
 const ROTATION_SPEED : float = 3.0;
-const LAUNCH_SPEED_MAGNITUDE : float = 900;
-
 const RAYCAST_COLLISION_LAYER : int = 0b0010;
 const BOBBLE_COLLISION_LAYER : int = 0b0001;
-
-const KILL_LINE_PERCENTAGE : float = 0.85;
-
 const MAX_POP_PITCH : float = 1.3;
 const MIN_POP_PITCH : float = 0.7;
-
-var food_prop_blueprint = preload("res://scene/food_prop.tscn");
 const FOOD_PROP_X_VELOCITY_RANGE := Vector2(-100, 100);
 const FOOD_PROP_Y_VELOCITY_RANGE := Vector2(-300, -500);
+const ANGLE_PER_POINT_RAD : float = deg_to_rad(2);
+const PROGRESS_CIRCLE_RADIUS : float = 30;
+const CIRCLE_ANGLE_OFFSET : float = deg_to_rad(270);
 
 
-var static_bobble_blueprint : PackedScene = preload("res://scene/static_bobble.tscn");
+const FOOD_PROP_BLUEPRINT = preload("res://scene/bobble/food_prop.tscn");
+const STATIC_BOBBLE_BLUEPRINT : PackedScene = preload("res://scene/bobble/static_bobble.tscn");
+
 var current_rotation = 0;
-
-@export var dot_textures : Array[Texture2D];
 var dot_texture_index : int = 0;
 const dot_seconds_per_cycle : float = 0.2;
 var elapsed_seconds_for_dot : float = 0;
-
-@export var cell_count_horizontal := 7;
 var bubble_radius : float;
 var row_height : float;
-
 var row_offset_count : int = 0;
 var next_bobble;
 var parent_level;
 var shot_cooldown_finished := true;
-
 var flying_bobble_count : int = 0;
-
 var help_lines = [];
-
 var bubble_grid : Array[Array];
-
 var progress_circle_points := PackedVector2Array();
-const ANGLE_PER_POINT_RAD : float = deg_to_rad(2);
-const PROGRESS_CIRCLE_RADIUS : float = 30;
-const CIRCLE_ANGLE_OFFSET : float = deg_to_rad(270);
-@export var seconds_per_row : float = 9;
-@export var time_decrease_per_row : float = 0.2;
-@export var min_seconds_per_row : float = 5;
 var elapsed_seconds_for_new_row : float = 0;
-
 
 # These are used to prevent pressing left and right cancelling each other out for input.
 var override_left := false;
@@ -107,7 +99,7 @@ func _process(delta):
 	if not shot_cooldown_finished:
 		cur_seconds_after_shot += delta;
 	
-		if cur_seconds_after_shot >= SECONDS_BETWEEN_SHOTS:
+		if cur_seconds_after_shot >= seconds_between_shots:
 			cur_seconds_after_shot = 0;
 			shot_cooldown_finished = true;
 			set_next_bobble();
@@ -247,7 +239,7 @@ func fire_bobble():
 	add_child(next_bobble);
 	next_bobble.connect("impacted", handle_collision);
 	next_bobble.global_position = $Tray/Gun/GunBase.global_position;
-	next_bobble.set_velocity(Vector2(LAUNCH_SPEED_MAGNITUDE * sin(self.current_rotation), LAUNCH_SPEED_MAGNITUDE* -cos(self.current_rotation)));
+	next_bobble.set_velocity(Vector2(launch_speed_magnitude * sin(self.current_rotation), launch_speed_magnitude* -cos(self.current_rotation)));
 
 	$Tray/Gun/BobbleProp.visible = false;
 	shot_cooldown_finished = false;
@@ -386,7 +378,7 @@ func destroy_bobbles_at_coords(coord_list : Array[Vector2]) -> int:
 	return count_to_pop;
 
 func spawn_props(bobble):
-	var prop = food_prop_blueprint.instantiate();
+	var prop = FOOD_PROP_BLUEPRINT.instantiate();
 	prop.scale_bobble(bubble_radius);
 	prop.set_food_scale(bobble.get_food_scale());
 	prop.copy_bobble_textures(bobble);
@@ -440,7 +432,7 @@ func lock_bobble_to_grid(bobble, indeces, replace_node = true) -> Node2D:
 	var static_bobble;
 	
 	if replace_node:
-		static_bobble = static_bobble_blueprint.instantiate();
+		static_bobble = STATIC_BOBBLE_BLUEPRINT.instantiate();
 		static_bobble.collision_layer |= RAYCAST_COLLISION_LAYER; 
 		
 		static_bobble.pixel_radius = bubble_radius;
@@ -472,7 +464,7 @@ func get_y_grid_pos_for_kill_line() -> int:
 
 	var bobble_game_length = $BackgroundSprite.get_rect().size[1] * global_scale[1];
 
-	return round(((bobble_game_length - bubble_radius) / row_height) * KILL_LINE_PERCENTAGE);
+	return round(((bobble_game_length - bubble_radius) / row_height) * kill_line_percentage);
 
 func lock_kill_line_to_grid() -> void:
 	var y_pos = $Hitborder/TopWall/CollisionShape2D.global_position.y + \

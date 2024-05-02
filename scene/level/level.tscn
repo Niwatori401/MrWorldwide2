@@ -111,7 +111,6 @@ music_stages = Array[AudioStream]([ExtResource("2_ebkqq"), ExtResource("3_5gvfr"
 position = Vector2(1521, 541)
 scale = Vector2(1.39, 1.39)
 bobble_set = Array[PackedScene]([SubResource("PackedScene_r5svo"), SubResource("PackedScene_m0shg"), SubResource("PackedScene_avut8")])
-SECONDS_BETWEEN_SHOTS = 0.2
 dot_textures = Array[Texture2D]([ExtResource("7_ckbjk"), ExtResource("8_4ic4f"), ExtResource("9_sir74"), ExtResource("10_4by1t"), ExtResource("11_wnawi"), ExtResource("12_qlhu0"), ExtResource("13_i5lep"), ExtResource("14_ufd5v"), ExtResource("15_pfv73"), ExtResource("16_5hc1f"), ExtResource("17_mstah"), ExtResource("18_rmesm"), ExtResource("19_cmelx"), ExtResource("20_xxlcr"), ExtResource("21_sf5ri"), ExtResource("22_x1etq")])
 
 [node name="PauseIcon" type="Sprite2D" parent="."]

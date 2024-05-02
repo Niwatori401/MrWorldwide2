@@ -1,14 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://5ptorvj6x01s"]
+[gd_scene load_steps=15 format=3 uid="uid://5ptorvj6x01s"]
 
 [ext_resource type="PackedScene" uid="uid://bqmxgs4s7mci" path="res://scene/level/level.tscn" id="1_lh4ke"]
-[ext_resource type="Texture2D" uid="uid://crp8x57ho8lkn" path="res://asset/level/japan/img/stage_bg.png" id="2_1nbnr"]
 [ext_resource type="Texture2D" uid="uid://dvo0wlfai3ajw" path="res://asset/level/japan/img/game_bg.png" id="3_hpfco"]
-[ext_resource type="PackedScene" uid="uid://cpbwngfjqlgdh" path="res://scene/bobble/bobble_riceball.tscn" id="4_vo24d"]
-[ext_resource type="PackedScene" uid="uid://busdp4s14ut6d" path="res://scene/bobble/bobble_fish.tscn" id="5_024ib"]
-[ext_resource type="PackedScene" uid="uid://dwuby3xbkhcqu" path="res://scene/bobble/bobble_pocky.tscn" id="6_rv6ad"]
-[ext_resource type="PackedScene" uid="uid://cctyardwq4w7q" path="res://scene/bobble/bobble_sushi.tscn" id="7_e3t61"]
-[ext_resource type="PackedScene" uid="uid://cs8fg4j5duhiy" path="res://scene/bobble/bobble_croquet.tscn" id="8_lri7s"]
-[ext_resource type="PackedScene" uid="uid://b24dekg2d4ab1" path="res://scene/bobble/bobble_dango.tscn" id="9_g6pot"]
+[ext_resource type="PackedScene" uid="uid://cpbwngfjqlgdh" path="res://scene/bobble/instance/bobble_riceball.tscn" id="4_vo24d"]
+[ext_resource type="PackedScene" uid="uid://busdp4s14ut6d" path="res://scene/bobble/instance/bobble_fish.tscn" id="5_024ib"]
+[ext_resource type="PackedScene" uid="uid://dwuby3xbkhcqu" path="res://scene/bobble/instance/bobble_pocky.tscn" id="6_rv6ad"]
+[ext_resource type="PackedScene" uid="uid://cctyardwq4w7q" path="res://scene/bobble/instance/bobble_sushi.tscn" id="7_e3t61"]
+[ext_resource type="PackedScene" uid="uid://cs8fg4j5duhiy" path="res://scene/bobble/instance/bobble_croquet.tscn" id="8_lri7s"]
+[ext_resource type="PackedScene" uid="uid://b24dekg2d4ab1" path="res://scene/bobble/instance/bobble_dango.tscn" id="9_g6pot"]
 [ext_resource type="Texture2D" uid="uid://c82xxounvsr4k" path="res://asset/level/japan/img/character/100.png" id="10_yvtbo"]
 [ext_resource type="Texture2D" uid="uid://b1y3wv85m1gqq" path="res://asset/level/japan/img/character/140.png" id="11_3v7vo"]
 [ext_resource type="Texture2D" uid="uid://mn6hj8t3fyin" path="res://asset/level/japan/img/character/180.png" id="12_5ncsa"]
@@ -18,16 +17,14 @@
 
 [node name="Level" instance=ExtResource("1_lh4ke")]
 
-[node name="Background" parent="." index="0"]
-texture = ExtResource("2_1nbnr")
-
 [node name="BobbleGame" parent="." index="1"]
-background_sprite = ExtResource("3_hpfco")
-bobble_set = Array[PackedScene]([ExtResource("4_vo24d"), ExtResource("5_024ib"), ExtResource("6_rv6ad"), ExtResource("7_e3t61"), ExtResource("8_lri7s"), ExtResource("9_g6pot")])
+cell_count_horizontal = 9
+seconds_between_shots = 0.2
 initial_rows_count = 3
-cell_count_horizontal = 8
 seconds_per_row = 15.0
 min_seconds_per_row = 8.0
+background_sprite = ExtResource("3_hpfco")
+bobble_set = Array[PackedScene]([ExtResource("4_vo24d"), ExtResource("5_024ib"), ExtResource("6_rv6ad"), ExtResource("7_e3t61"), ExtResource("8_lri7s"), ExtResource("9_g6pot")])
 
 [node name="Character" parent="." index="3"]
 character_sprites = Array[Texture2D]([ExtResource("10_yvtbo"), ExtResource("11_3v7vo"), ExtResource("12_5ncsa"), ExtResource("13_n6bc6"), ExtResource("14_igkw7"), ExtResource("15_u8p8f")])

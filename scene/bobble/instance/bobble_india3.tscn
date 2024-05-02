@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://bok10s8x6jdpa"]
+
+[ext_resource type="PackedScene" uid="uid://dyvy8680f6wue" path="res://scene/bobble/bobble.tscn" id="1_31itx"]
+[ext_resource type="Texture2D" uid="uid://b4ckafhcgc1no" path="res://asset/level/newdelhi/img/bobble/food_3.png" id="2_uc7ry"]
+[ext_resource type="Texture2D" uid="uid://dss8oxmwealgo" path="res://asset/level/newdelhi/img/bobble/bobble_3.png" id="3_14o5q"]
+
+[node name="Bobble" instance=ExtResource("1_31itx")]
+bobble_type = "india3"
+
+[node name="Food" parent="CollisionShape" index="0"]
+position = Vector2(0, 0)
+scale = Vector2(0.215625, 0.215625)
+texture = ExtResource("2_uc7ry")
+
+[node name="Shell" parent="CollisionShape" index="1"]
+texture = ExtResource("3_14o5q")

@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cicc6aqgaf0fs" path="res://asset/DEFAULT/img/sample_score_bg.png" id="5_v1o3s"]
 [ext_resource type="Texture2D" uid="uid://dc0e7k7a36pfx" path="res://asset/DEFAULT/img/sample_shoot_base.png" id="6_jwb1a"]
 [ext_resource type="Texture2D" uid="uid://bby2pdy6crqdl" path="res://asset/DEFAULT/img/sample_shoot_arrow.png" id="7_jyo66"]
-[ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble_prop.tscn" id="8_8itb7"]
+[ext_resource type="PackedScene" uid="uid://cc1dlwehfdxbe" path="res://scene/bobble/bobble_prop.tscn" id="8_8itb7"]
 [ext_resource type="AudioStream" uid="uid://cirk67obds7a1" path="res://asset/DEFAULT/sound/shoot.ogg" id="8_ktd4x"]
 [ext_resource type="Texture2D" uid="uid://ipf35f6lrqrp" path="res://asset/DEFAULT/img/kill_line.png" id="10_qq7ho"]
 [ext_resource type="AudioStream" uid="uid://bu728kw3xrvuk" path="res://asset/DEFAULT/sound/pop.ogg" id="11_vepe5"]
@@ -31,7 +31,6 @@ scale = Vector2(0.77, 0.77)
 script = ExtResource("1_mwlaa")
 
 [node name="GameBGBorder" type="Sprite2D" parent="."]
-scale = Vector2(1, 1)
 texture = ExtResource("2_62l57")
 
 [node name="BackgroundSprite" type="Sprite2D" parent="."]
