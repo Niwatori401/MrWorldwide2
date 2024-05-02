@@ -27,4 +27,5 @@ background_sprite = ExtResource("3_hpfco")
 bobble_set = Array[PackedScene]([ExtResource("4_vo24d"), ExtResource("5_024ib"), ExtResource("6_rv6ad"), ExtResource("7_e3t61"), ExtResource("8_lri7s"), ExtResource("9_g6pot")])
 
 [node name="Character" parent="." index="3"]
+point_thresholds = Array[int]([90, 140, 180, 260, 370])
 character_sprites = Array[Texture2D]([ExtResource("10_yvtbo"), ExtResource("11_3v7vo"), ExtResource("12_5ncsa"), ExtResource("13_n6bc6"), ExtResource("14_igkw7"), ExtResource("15_u8p8f")])

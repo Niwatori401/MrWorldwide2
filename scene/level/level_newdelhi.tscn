@@ -37,3 +37,5 @@ bobble_set = Array[PackedScene]([ExtResource("9_uvo1e"), ExtResource("10_2355l")
 [node name="Character" parent="." index="3"]
 point_thresholds = Array[int]([100, 150, 200, 300, 450])
 character_sprites = Array[Texture2D]([ExtResource("9_okwa1"), ExtResource("10_q6hdj"), ExtResource("11_8q27g"), ExtResource("12_43uh5"), ExtResource("13_wt0fl"), ExtResource("14_02dcm")])
+
+[editable path="Character"]

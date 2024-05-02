@@ -20,8 +20,14 @@ func _ready():
 	update_score_text();
 	update_music();
 	
+func _process(_delta):
+	if Input.is_action_just_pressed("number_1"):
+		get_tree().change_scene_to_file("res://scene/level/level_texas.tscn")
+	if Input.is_action_just_pressed("number_2"):
+		get_tree().change_scene_to_file("res://scene/level/level_newdelhi.tscn")
+	if Input.is_action_just_pressed("number_3"):
+		get_tree().change_scene_to_file("res://scene/level/level_japan.tscn")
 	
-
 func on_bobble_popped():
 	cur_points += POINTS_PER_BOBBLE;
 	update_score_text();

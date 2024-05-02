@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://script/character.gd" id="1_q3sok"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_00jb6"]
+resource_local_to_scene = true
 animations = [{
 "frames": [],
 "loop": true,
