@@ -28,6 +28,9 @@ func _process(_delta):
 	if Input.is_action_just_pressed("number_3"):
 		get_tree().change_scene_to_file("res://scene/level/level_japan.tscn")
 	
+	if Input.is_action_just_pressed("cancel"):
+		get_tree().change_scene_to_file("res://scene/level_select.tscn");
+	
 func on_bobble_popped():
 	cur_points += POINTS_PER_BOBBLE;
 	update_score_text();

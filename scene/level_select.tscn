@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6ojnvi0pnhtk"]
+
+[ext_resource type="PackedScene" uid="uid://cyjyyhwnbdxcv" path="res://scene/map_dot.tscn" id="1_kxfyy"]
+[ext_resource type="Script" path="res://script/level_select.gd" id="1_mml3d"]
+[ext_resource type="Texture2D" uid="uid://bot4liqw24hh" path="res://asset/map_select/world_map.png" id="2_ecgdq"]
+
+[node name="LevelSelect" type="Node2D"]
+script = ExtResource("1_mml3d")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+texture = ExtResource("2_ecgdq")
+
+[node name="MapNode" type="Node2D" parent="."]
+scale = Vector2(0.165, 0.165)
+
+[node name="Tokyo" parent="MapNode" instance=ExtResource("1_kxfyy")]
+position = Vector2(7339.39, 3775.76)
+level_scene_path = "res://scene/level/level_japan.tscn"
+
+[node name="Texas" parent="MapNode" instance=ExtResource("1_kxfyy")]
+position = Vector2(9812.12, 2654.55)
+level_scene_path = "res://scene/level/level_texas.tscn"
+
+[node name="India" parent="MapNode" instance=ExtResource("1_kxfyy")]
+position = Vector2(5969.7, 3042.42)
+level_scene_path = "res://scene/level/level_newdelhi.tscn"
